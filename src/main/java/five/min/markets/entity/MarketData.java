@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import org.hibernate.annotations.Generated;
 import org.hibernate.generator.EventType;
@@ -18,6 +19,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
@@ -59,25 +61,14 @@ public class MarketData {
 	private BigDecimal volume;
 	@Column(name = "up", columnDefinition = "boolean", nullable = false)
 	private Boolean up;
-	@Column(name = "down", columnDefinition = "boolean", nullable = false)
-	private Boolean down;
-	@Column(name = "same", columnDefinition = "boolean", nullable = false)
-	private Boolean same;
-	
+	@OneToMany(mappedBy = "marketData")
+	private Set<MarketDataFeature> features;
 	public void setDirection() {
-		if(open.compareTo(close) == 0) {
-			same = Boolean.TRUE;
+		if(open.compareTo(close) >= 0) {
 			up = Boolean.FALSE;
-			down = Boolean.FALSE;
 		}
-		else if(open.compareTo(close) < 0) {
-			same = Boolean.FALSE;
+		else {
 			up = Boolean.TRUE;
-			down = Boolean.FALSE;
-		} else {
-			same = Boolean.FALSE;
-			up = Boolean.FALSE;
-			down = Boolean.TRUE;
 		}
 	}
 }

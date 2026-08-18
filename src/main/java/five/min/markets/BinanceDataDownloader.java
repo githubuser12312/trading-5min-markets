@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import five.min.markets.binance.marketdata.BinanceDataDownloadManager;
 
 @Component
-@Profile("!test")
+@Profile(value = {"dataDownload"})
 public class BinanceDataDownloader implements CommandLineRunner {
 
 

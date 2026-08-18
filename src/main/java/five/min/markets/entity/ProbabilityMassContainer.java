@@ -1,14 +1,17 @@
 package five.min.markets.entity;
 
+import java.util.Set;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.EqualsAndHashCode;
@@ -16,33 +19,27 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "market_data_feature", uniqueConstraints = {
-		@UniqueConstraint(columnNames = {"market_data_id", "feature_type"})
+@Table(name = "probability_mass", uniqueConstraints = {
+		@UniqueConstraint(columnNames = {"internal_market_id", "feature_type"})
 })
-@Getter
-@Setter
+@Getter @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class MarketDataFeature {
+public class ProbabilityMassContainer {
 
 	@Column(name = "id", unique = true)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Id
-	private Long id;
-	@ManyToOne(optional = false)
-	@JoinColumn(name = "market_data_id")
-	private MarketData marketData;
-	@Column(name = "feature_type", nullable = false)
-	@Enumerated(EnumType.ORDINAL)
+	private Integer id;
+	@ManyToOne
+	@JoinColumn(name = "internal_market_id")
+	@EqualsAndHashCode.Include
+	private Market market;
+	@Enumerated
+	@Column(name = "feature_type")
+	@EqualsAndHashCode.Include
 	private FeatureType featureType;
-	private Integer integerValue = null;
-	private Double doubleValue = null;
-	private Boolean booleanValue = null;
-	private String stringValue = null;
+	@OneToMany(mappedBy = "probabilityMassContainer",fetch = FetchType.LAZY)
+	private Set<ProbabilityMassData> probabilityMassData;
 	
-	public void reset() {
-		integerValue = null;
-		doubleValue = null;
-		booleanValue = null;
-		stringValue = null;
-	}
+	
 }
