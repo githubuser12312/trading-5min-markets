@@ -21,7 +21,7 @@ public class MarketDataFeatureMapperRunner implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		log.info("Map features");
-		this.updateMarketDataFeatures.mapFeatures();
+		this.updateMarketDataFeatures.mapFeatures(0);
 	}
 
 }

@@ -12,13 +12,11 @@ public  abstract class AbstractSmaFeature extends AbstractBufferedFeature  imple
 	private double sum = 0;
 	private Double average = null;
 	private FeatureType featureType;
-	private MarketDataFeatureRepository marketDataFeatureRepository;
 	
 	public AbstractSmaFeature(FeatureType featureType,
 			MarketDataFeatureRepository marketDataFeatureRepository) {
-		super((int) featureType.config.get("length"));
+		super((int) featureType.config.get("length"), marketDataFeatureRepository);
 		this.featureType = featureType;
-		this.marketDataFeatureRepository = marketDataFeatureRepository;
 	}
 
 	protected void update(MarketData marketData) {
@@ -45,16 +43,6 @@ public  abstract class AbstractSmaFeature extends AbstractBufferedFeature  imple
 	
 	protected abstract void mapFeatureValue(MarketDataFeature marketDataFeature, MarketData marketData);
 	
-	private MarketDataFeature getFeature(MarketData marketData) {
-		MarketDataFeature currentFeature = marketDataFeatureRepository.findByMarketDataEqualsAndFeatureTypeEquals(marketData, featureType);
-		if(currentFeature == null) {
-			currentFeature = new MarketDataFeature();
-			currentFeature.setFeatureType(featureType);
-			currentFeature.setMarketData(marketData);
-		}
-		currentFeature.reset();
-		return currentFeature;
-	}
 	
 	public void reset() {
 		buffer.clear();

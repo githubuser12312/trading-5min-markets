@@ -1,16 +1,32 @@
 package five.min.markets.entity;
 
 import java.util.Map;
+import java.util.stream.Stream;
 
 public enum FeatureType {
 
-	LAST_BAR_UP(null),
-	SMA_10_CROSS_OVER(Map.of("length", 10)),
-	SMA_10_CROSS_UNDER(Map.of("length", 10));
+	LAST_BAR_UP(0, null),
+	SMA_10_CROSS_OVER(0, Map.of("length", 10)),
+	SMA_10_CROSS_UNDER(0, Map.of("length", 10)),
+	REGRESSION_SLOPE_10(0, Map.of("length", 10));
 	
 	public final Map<String, Object> config;
+	public final Integer order;
 	
-	private  FeatureType(Map<String,Object> config) {
+	private  FeatureType(Integer order, Map<String,Object> config) {
+		this.order = order;
 		this.config = config;
+	}
+	
+	public static Integer maxOrder() {
+		return Stream.of(FeatureType.values()).mapToInt(f -> f.order).max().getAsInt();
+	}
+	
+	public static Integer minOrder() {
+		return Stream.of(FeatureType.values()).mapToInt(f -> f.order).min().getAsInt();
+	}
+	
+	public static FeatureType[] byOrder(Integer order) {
+		return (FeatureType[]) Stream.of(FeatureType.values()).filter(f -> f.order == order).toArray();
 	}
 }

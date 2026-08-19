@@ -30,7 +30,7 @@ public class UpdateMarketDataFeatures {
 		this.marketDataRepository = marketDataRepository;
 	}
 	
-	public void mapFeatures() {
+	public void mapFeatures(Integer featureOrder) {
 		List<Market> markets = marketRepository.findAll();
 		
 		for(Market market : markets) {
@@ -41,11 +41,13 @@ public class UpdateMarketDataFeatures {
 				log.info("Processing page {} of {}", marketDataPage.getPageNumber(), marketDatas.getTotalPages());
 				for(MarketData data : marketDatas) {
 					for(FeatureMapper featureMapper : featureMappers) {
-						log.debug("Mapping feature {} for market {} data {}", 
-								featureMapper.getClass().getSimpleName(), 
-								market.getCode(),
-								data.getStart());
-						featureMapper.updateFeature(data);
+						if(featureMapper.getFeatureType().order == featureOrder) {
+							log.debug("Mapping feature {} for market {} data {}", 
+									featureMapper.getClass().getSimpleName(), 
+									market.getCode(),
+									data.getStart());
+							featureMapper.updateFeature(data);
+						}
 					}
 				}
 				marketDataPage = marketDataPage.next();

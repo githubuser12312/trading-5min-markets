@@ -10,13 +10,12 @@ import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
-public class LastBarFeatureMapper implements FeatureMapper {
+public class LastBarFeatureMapper extends AbstractFeature {
 
 	private MarketData lastBar;
-	private MarketDataFeatureRepository marketDataFeatureRepository;
 	
 	public LastBarFeatureMapper(MarketDataFeatureRepository marketDataFeatureRepository) {
-		this.marketDataFeatureRepository = marketDataFeatureRepository;
+		super(marketDataFeatureRepository);
 	}
 	
 	@Override
@@ -26,12 +25,7 @@ public class LastBarFeatureMapper implements FeatureMapper {
 			lastBar = marketData;
 			return;
 		}
-		MarketDataFeature currentFeature = marketDataFeatureRepository.findByMarketDataEqualsAndFeatureTypeEquals(marketData, FeatureType.LAST_BAR_UP);
-		if(currentFeature == null) {
-			currentFeature = new MarketDataFeature();
-			currentFeature.setFeatureType(FeatureType.LAST_BAR_UP);
-			currentFeature.setMarketData(marketData);
-		}
+		MarketDataFeature currentFeature = getFeature(marketData);
 		currentFeature.reset();
 		if(lastBar.getUp()) {
 			currentFeature.setBooleanValue(Boolean.TRUE);
@@ -40,6 +34,11 @@ public class LastBarFeatureMapper implements FeatureMapper {
 		}
 		marketDataFeatureRepository.save(currentFeature);
 		lastBar = marketData;
+	}
+
+	@Override
+	public FeatureType getFeatureType() {
+		return FeatureType.LAST_BAR_UP;
 	}
 
 }
