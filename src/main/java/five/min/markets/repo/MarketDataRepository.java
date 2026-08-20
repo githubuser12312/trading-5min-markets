@@ -19,17 +19,5 @@ public interface MarketDataRepository extends JpaRepository<MarketData, Integer>
 	
 	MarketData findByMarketEqualsAndStartEquals(Market market, Instant start);
 	
-	@Query("""
-			SELECT COUNT(*) 
-			FROM MarketData d 
-			JOIN d.features f 
-			WHERE d.market = :market 
-			AND f.featureType = :featureType
-			AND d.up = :up
-			AND f.booleanValue = :featureValue
-			""")
-	Long countByUpAndFeatureAndFeatureBooleanValue(@Param("market") Market market, 
-			@Param("featureType") FeatureType featureType, 
-			@Param("up") Boolean isUp, 
-			@Param("featureValue") Boolean featureValue);
+
 }

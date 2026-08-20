@@ -11,17 +11,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import five.min.markets.repo.BarBeforeProbabilityMassRepository;
+import five.min.markets.repo.BooleanProbabilityMassRepository;
 import five.min.markets.repo.MarketDataRepository;
 import five.min.markets.repo.MarketRepository;
 import five.min.markets.repo.ProbabilityMassContainerRepository;
 import five.min.markets.repo.ProbabilityMassDataRepository;
 
 @SpringBootTest
-public class BarBeforeProbabilityMassTest {
+public class BooleanProbabilityMassTest {
 
 	@Autowired
-	private BarBeforeProbabilityMassRepository barBeforeProbabilityMassRepository;
+	private BooleanProbabilityMassRepository barBeforeProbabilityMassRepository;
 	@Autowired
 	private ProbabilityMassContainerRepository probabilityMassContainerRepository;
 	@Autowired
@@ -46,11 +46,11 @@ public class BarBeforeProbabilityMassTest {
 		return probabilityMassContainerRepository.save(probabilityMassContainer);
 	}
 	
-	private BarBeforeProbabilityMass createBarBeforeProbabilityMass(ProbabilityMassContainer probabilityMassContainer) {
-		BarBeforeProbabilityMass barBeforeProbabilityMass = new BarBeforeProbabilityMass();
-		barBeforeProbabilityMass.setCurrentBarUp(true);
+	private BooleanProbabilityMass createBarBeforeProbabilityMass(ProbabilityMassContainer probabilityMassContainer) {
+		BooleanProbabilityMass barBeforeProbabilityMass = new BooleanProbabilityMass();
+		barBeforeProbabilityMass.setFeatureValue(true);
 		barBeforeProbabilityMass.setDenominator(200L);
-		barBeforeProbabilityMass.setLastBarUp(true);
+		barBeforeProbabilityMass.setLastBarBoolean(true);
 		barBeforeProbabilityMass.setNumerator(100L);
 		barBeforeProbabilityMass.setProbabilityMassContainer(probabilityMassContainer);
 		return probabilityMassDataRepository.save(barBeforeProbabilityMass);
@@ -60,13 +60,13 @@ public class BarBeforeProbabilityMassTest {
 	public void testBarBeforeProbabilityMass() {
 		Market market = createMarket();
 		ProbabilityMassContainer probabilityMassContainer = createProbabilityMassContainer(market);
-		BarBeforeProbabilityMass barBeforeProbabilityMass = createBarBeforeProbabilityMass(probabilityMassContainer);
+		BooleanProbabilityMass barBeforeProbabilityMass = createBarBeforeProbabilityMass(probabilityMassContainer);
 		assertNotNull(barBeforeProbabilityMass);
 		assertNotNull(barBeforeProbabilityMass.getProbability());
 		assertEquals(0.5, barBeforeProbabilityMass.getProbability());
 		assertEquals(100L, barBeforeProbabilityMass.getNumerator());
 		assertEquals(200L, barBeforeProbabilityMass.getDenominator());
-		assertTrue(barBeforeProbabilityMass.isCurrentBarUp());
-		assertTrue(barBeforeProbabilityMass.isLastBarUp());
+		assertTrue(barBeforeProbabilityMass.isFeatureValue());
+		assertTrue(barBeforeProbabilityMass.isLastBarBoolean());
 	}
 }

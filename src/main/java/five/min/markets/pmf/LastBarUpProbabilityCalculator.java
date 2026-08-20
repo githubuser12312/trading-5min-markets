@@ -3,17 +3,17 @@ package five.min.markets.pmf;
 import org.springframework.stereotype.Component;
 
 import five.min.markets.entity.FeatureType;
-import five.min.markets.repo.BarBeforeProbabilityMassRepository;
+import five.min.markets.repo.BooleanProbabilityMassRepository;
 import five.min.markets.repo.MarketDataFeatureRepository;
 import five.min.markets.repo.MarketDataRepository;
 import five.min.markets.repo.ProbabilityMassContainerRepository;
 
 @Component
-public class LastBarUpProbabilityCalculator extends AbstractLastBarCurrentBarProbabilityCalculator {
+public class LastBarUpProbabilityCalculator extends AbstractBooleanProbabilityCalculator {
 
 	public LastBarUpProbabilityCalculator(MarketDataRepository marketDataRepository,
 			MarketDataFeatureRepository marketDataFeatureRepository,
-			BarBeforeProbabilityMassRepository barBeforeProbabilityMassRepository,
+			BooleanProbabilityMassRepository barBeforeProbabilityMassRepository,
 			ProbabilityMassContainerRepository probabilityMassContainerRepository) {
 		super(marketDataRepository, marketDataFeatureRepository, barBeforeProbabilityMassRepository,
 				probabilityMassContainerRepository);
@@ -21,7 +21,7 @@ public class LastBarUpProbabilityCalculator extends AbstractLastBarCurrentBarPro
 	}
 
 	@Override
-	FeatureType getFeatureType() {
+	public FeatureType getFeatureType() {
 		return FeatureType.LAST_BAR_UP;
 	}
 

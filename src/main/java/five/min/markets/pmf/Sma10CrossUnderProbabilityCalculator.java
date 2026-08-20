@@ -3,17 +3,17 @@ package five.min.markets.pmf;
 import org.springframework.stereotype.Component;
 
 import five.min.markets.entity.FeatureType;
-import five.min.markets.repo.BarBeforeProbabilityMassRepository;
+import five.min.markets.repo.BooleanProbabilityMassRepository;
 import five.min.markets.repo.MarketDataFeatureRepository;
 import five.min.markets.repo.MarketDataRepository;
 import five.min.markets.repo.ProbabilityMassContainerRepository;
 
 @Component
-public class Sma10CrossUnderProbabilityCalculator extends AbstractLastBarCurrentBarProbabilityCalculator {
+public class Sma10CrossUnderProbabilityCalculator extends AbstractBooleanProbabilityCalculator {
 
 	public Sma10CrossUnderProbabilityCalculator(MarketDataRepository marketDataRepository,
 			MarketDataFeatureRepository marketDataFeatureRepository,
-			BarBeforeProbabilityMassRepository barBeforeProbabilityMassRepository,
+			BooleanProbabilityMassRepository barBeforeProbabilityMassRepository,
 			ProbabilityMassContainerRepository probabilityMassContainerRepository) {
 		super(marketDataRepository, marketDataFeatureRepository, barBeforeProbabilityMassRepository,
 				probabilityMassContainerRepository);
@@ -21,7 +21,7 @@ public class Sma10CrossUnderProbabilityCalculator extends AbstractLastBarCurrent
 	}
 
 	@Override
-	FeatureType getFeatureType() {
+	public FeatureType getFeatureType() {
 		return FeatureType.SMA_10_CROSS_UNDER;
 	}
 

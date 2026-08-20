@@ -1,6 +1,7 @@
 package five.min.markets.repo;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,15 +21,55 @@ public interface MarketDataFeatureRepository extends JpaRepository<MarketDataFea
 			SELECT COUNT(*)
 			FROM MarketDataFeature f
 			JOIN f.marketData d
-			join d.market m
-			WHERE m = :market
+			WHERE d.market = :market
 			AND f.featureType = :featureType
 			AND f.booleanValue = :value
 			""")
-	Long countByMarketAndFeatureTypeAndBooleanValue(
+	Long featurePredictionDenominator(
 			@Param("market") Market market, 
 			@Param("featureType") FeatureType featureType, 
 			@Param("value") Boolean value);
+
+	@Query("""
+			SELECT COUNT(*) 
+			FROM MarketData d 
+			JOIN d.features f 
+			WHERE d.market = :market 
+			AND f.featureType = :featureType
+			AND d.up = :up
+			AND f.booleanValue = :featureValue
+			""")
+	Long featurePredictionNumerator(@Param("market") Market market, 
+			@Param("featureType") FeatureType featureType, 
+			@Param("up") Boolean isUp, 
+			@Param("featureValue") Boolean featureValue);
+	
+	@Query("""
+			SELECT COUNT(*)
+			FROM MarketDataFeature f
+			JOIN f.marketData d
+			WHERE d.market = :market
+			AND f.featureType = :featureType
+			AND f.stringValue = :value
+			""")
+	Long featurePredictionDenominator(
+			@Param("market") Market market, 
+			@Param("featureType") FeatureType featureType, 
+			@Param("value") String value);
+	
+	@Query("""
+			SELECT COUNT(*) 
+			FROM MarketData d 
+			JOIN d.features f 
+			WHERE d.market = :market 
+			AND f.featureType = :featureType
+			AND d.up = :up
+			AND f.stringValue = :featureValue
+			""")
+	Long featurePredictionNumerator(@Param("market") Market market, 
+			@Param("featureType") FeatureType featureType, 
+			@Param("up") Boolean isUp, 
+			@Param("featureValue") String featureValue);
 	
 	@Query(value = """
 			with double_ntiles as (
@@ -67,4 +108,14 @@ public interface MarketDataFeatureRepository extends JpaRepository<MarketDataFea
 				@Param("tiles") Integer numTiles, 
 				@Param("featureType") FeatureType featureType,
 				@Param("marketId") Integer marketId); 
+	
+	@Query("""
+			SELECT DISTINCT stringValue
+			FROM MarketDataFeature f
+			JOIN f.marketData d
+			JOIN d.market m
+			WHERE f.featureType = :featureType
+			AND m = :market
+			""")
+	Set<String> findFeatureValues(@Param("market") Market market, @Param("featureType") FeatureType featureType);
 }

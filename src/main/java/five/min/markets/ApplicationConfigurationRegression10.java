@@ -8,20 +8,23 @@ import five.min.markets.entity.StatType;
 import five.min.markets.feature.FeatureMapper;
 import five.min.markets.feature.RegressionFeature;
 import five.min.markets.feature.RegressionTrendFeature;
+import five.min.markets.pmf.ProbabilityCalculator;
+import five.min.markets.pmf.StringProbabilityCalculator;
 import five.min.markets.repo.MarketDataFeatureRepository;
 import five.min.markets.repo.NTileStatRepository;
+import five.min.markets.repo.ProbabilityMassContainerRepository;
+import five.min.markets.repo.StringProbabilityMassRepository;
 import five.min.markets.stat.CalculateStat;
 import five.min.markets.stat.FeatureTypeGreaterThanZeroNTileStat;
 import five.min.markets.stat.FeatureTypeLessThanEqualsZeroNTileStat;
 import five.min.markets.stat.FeatureTypeNtileStat;
 
 @Configuration
-public class ApplicationConfiguration {
+public class ApplicationConfigurationRegression10 {
 
-	public ApplicationConfiguration() {
+	public ApplicationConfigurationRegression10() {
 		// TODO Auto-generated constructor stub
 	}
-
 
 	@Bean
 	RegressionFeature regressionSlope10(MarketDataFeatureRepository marketDataFeatureRepository) {
@@ -60,5 +63,23 @@ public class ApplicationConfiguration {
 				StatType.SLOPE_DOWN_QUARTILE_REG10,
 				FeatureType.REGRESSION_10_TREND_DOWN, 
 				FeatureType.REGRESSION_SLOPE_10);
+	}
+	
+	@Bean
+	ProbabilityCalculator regresssion10SlopeUp(ProbabilityMassContainerRepository probabilityMassContainerRepository,
+			StringProbabilityMassRepository stringProbabilityMassRepository,
+			MarketDataFeatureRepository marketDataFeatureRepository) {
+		return new StringProbabilityCalculator(FeatureType.REGRESSION_10_TREND_UP, 
+				probabilityMassContainerRepository, 
+				stringProbabilityMassRepository, marketDataFeatureRepository);
+	}
+	
+	@Bean
+	ProbabilityCalculator regresssion10SlopeDown(ProbabilityMassContainerRepository probabilityMassContainerRepository,
+			StringProbabilityMassRepository stringProbabilityMassRepository,
+			MarketDataFeatureRepository marketDataFeatureRepository) {
+		return new StringProbabilityCalculator(FeatureType.REGRESSION_10_TREND_DOWN, 
+				probabilityMassContainerRepository, 
+				stringProbabilityMassRepository, marketDataFeatureRepository);
 	}
 }

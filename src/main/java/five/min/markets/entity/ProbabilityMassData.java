@@ -35,6 +35,9 @@ public  abstract class ProbabilityMassData {
 	private Long denominator;
 	private Long numerator;
 	private Double probability;
+	@EqualsAndHashCode.Include
+	@Column(nullable = false, name = "prediction_bar_up")
+	private boolean lastBarBoolean;
 	
 	@PreUpdate
 	@PrePersist

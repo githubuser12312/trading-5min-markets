@@ -70,7 +70,7 @@ public class RegressionTrendFeature extends AbstractFeature {
 					featureType, baseFeatureType, slope);
 			return;
 		}
-		TrendClassification trend = TrendClassification.trend(applicable.getTile(), featureType);
+		TrendClassification trend = TrendClassification.trend(applicable.getTile(), !isDownSlope);
 		trendFeature.setStringValue(trend.name());
 		marketDataFeatureRepository.save(trendFeature);
 	} 

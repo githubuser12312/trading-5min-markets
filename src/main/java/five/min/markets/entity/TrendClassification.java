@@ -1,29 +1,25 @@
 package five.min.markets.entity;
 
-import java.util.Arrays;
-import java.util.stream.Stream;
-
 public enum TrendClassification {
 
-	NO_TREND(new Integer[] {1, 4}, FeatureType.REGRESSION_10_TREND_UP, FeatureType.REGRESSION_10_TREND_DOWN),
-	TREND_UP(new Integer[] {2, 3}, FeatureType.REGRESSION_10_TREND_UP),
-	STRONG_TREND_UP(new Integer[] {4}, FeatureType.REGRESSION_10_TREND_UP),
-	TREND_DOWN(new Integer[] {2, 3}, FeatureType.REGRESSION_10_TREND_DOWN),
-	STRONG_TREND_DOWN(new Integer[] {1}, FeatureType.REGRESSION_10_TREND_DOWN);
-	
-	private Integer[] tiles;
-	private FeatureType[] featureTypes;
-	
-	private TrendClassification(Integer[] tiles, FeatureType...featureTypes) {
-		this.tiles = tiles;
-		this.featureTypes = featureTypes;
-	}
-	
-	public static TrendClassification trend(Integer tile, FeatureType featureType) {
-		return Stream.of(TrendClassification.values())
-				.filter(v -> Arrays.binarySearch(v.tiles, tile) >= 0)
-				.filter(v -> Arrays.binarySearch(v.featureTypes, featureType) >= 0)
-				.findFirst().orElse(null);
+	NO_TREND,
+	TREND_UP,
+	STRONG_TREND_UP,
+	VSTRONG_TREND_UP,
+	TREND_DOWN,
+	STRONG_TREND_DOWN,
+	VSTRONG_TREND_DOWN;
+		
+	public static TrendClassification trend(Integer tile, final boolean isForUp) {
+		if(isForUp && tile == 1) return NO_TREND;
+		if(isForUp && tile == 2) return TREND_UP;
+		if(isForUp && tile ==3) return STRONG_TREND_UP;
+		if(isForUp && tile == 4) return VSTRONG_TREND_UP;
+		if(!isForUp && tile == 1) return VSTRONG_TREND_DOWN;
+		if(!isForUp && tile == 2) return STRONG_TREND_DOWN;
+		if(!isForUp && tile == 3) return TREND_DOWN;
+		if(!isForUp && tile == 4) return NO_TREND;
+		throw new RuntimeException(String.format("No trend for tile %s and for up %s", tile, isForUp));
 	}
 
 	

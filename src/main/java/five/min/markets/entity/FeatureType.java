@@ -10,7 +10,16 @@ public enum FeatureType {
 	SMA_10_CROSS_UNDER(0, Map.of("length", 10)),
 	REGRESSION_SLOPE_10(0, Map.of("length", 10)),
 	REGRESSION_10_TREND_UP(1, Map.of("isDown", Boolean.FALSE)),
-	REGRESSION_10_TREND_DOWN(1, Map.of("isDown", Boolean.TRUE));
+	REGRESSION_10_TREND_DOWN(1, Map.of("isDown", Boolean.TRUE)),
+	REGRESSION_SLOPE_20(0, Map.of("length", 20)),
+	REGRESSION_SLOPE_50(0, Map.of("length", 50)),
+	REGRESSION_SLOPE_100(0, Map.of("length", 100)),
+	REGRESSION_20_TREND_UP(1, Map.of("isDown", Boolean.FALSE)),
+	REGRESSION_20_TREND_DOWN(1, Map.of("isDown", Boolean.TRUE)),
+	REGRESSION_50_TREND_UP(1, Map.of("isDown", Boolean.FALSE)),
+	REGRESSION_50_TREND_DOWN(1, Map.of("isDown", Boolean.TRUE)),
+	REGRESSION_100_TREND_UP(1, Map.of("isDown", Boolean.FALSE)),
+	REGRESSION_100_TREND_DOWN(1, Map.of("isDown", Boolean.TRUE)),;
 	
 	public final Map<String, Object> config;
 	public final Integer order;

@@ -78,7 +78,7 @@ public class MarketDataTest {
 		MarketData marketData1 = createMarketData(market, 0);
 		MarketData marketData2 = createMarketData(market, 1);
 		MarketDataFeature marketDataFeature = createMarketDataFeature(marketData2);
-		Long countFeature = marketDataRepository.countByUpAndFeatureAndFeatureBooleanValue(market,
+		Long countFeature = marketDataFeatureRepository.featurePredictionNumerator(market,
 				FeatureType.LAST_BAR_UP, 
 				true,
 				true);
@@ -92,7 +92,7 @@ public class MarketDataTest {
 		MarketData marketData2 = createMarketData(market, 1);
 		MarketDataFeature marketDataFeature = createMarketDataFeature(marketData2);
 		MarketDataFeature marketDataFeature2 = createMarketDataFeature(marketData1);
-		long count = marketDataFeatureRepository.countByMarketAndFeatureTypeAndBooleanValue(market, 
+		long count = marketDataFeatureRepository.featurePredictionDenominator(market, 
 				FeatureType.LAST_BAR_UP, true);
 		assertEquals(2L, count);;
 	}
