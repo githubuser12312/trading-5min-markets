@@ -17,23 +17,31 @@ public class LastBarFeatureMapper extends AbstractFeature {
 	public LastBarFeatureMapper(MarketDataFeatureRepository marketDataFeatureRepository) {
 		super(marketDataFeatureRepository);
 	}
-	
+
 	@Override
-	public void updateFeature(MarketData marketData) {
+	public MarketDataFeature getFeature(MarketData marketData) {
 		if(lastBar == null) {
 			log.info("New dataset");
 			lastBar = marketData;
-			return;
+			return null;
 		}
-		MarketDataFeature currentFeature = getFeature(marketData);
+		MarketDataFeature currentFeature = getFeatureFromDb(marketData);
 		currentFeature.reset();
 		if(lastBar.getUp()) {
 			currentFeature.setBooleanValue(Boolean.TRUE);
 		} else {
 			currentFeature.setBooleanValue(Boolean.FALSE);
 		}
-		marketDataFeatureRepository.save(currentFeature);
 		lastBar = marketData;
+		return currentFeature;
+	}
+
+	@Override
+	public void updateFeature(MarketData marketData) {
+		MarketDataFeature currentFeature = getFeature(marketData);
+		if(currentFeature != null) {
+			marketDataFeatureRepository.save(currentFeature);
+		}
 	}
 
 	@Override

@@ -13,7 +13,7 @@ public abstract class AbstractFeature implements FeatureMapper {
 		this.marketDataFeatureRepository = marketDataFeatureRepository;
 	}
 	
-	protected MarketDataFeature getFeature(MarketData marketData) {
+	protected MarketDataFeature getFeatureFromDb(MarketData marketData) {
 		MarketDataFeature currentFeature = marketDataFeatureRepository.findByMarketDataEqualsAndFeatureTypeEquals(
 				marketData, getFeatureType());
 		if(currentFeature == null) {

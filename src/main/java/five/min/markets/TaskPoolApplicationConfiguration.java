@@ -5,6 +5,7 @@ import java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -15,6 +16,7 @@ import five.min.markets.repo.MarketDataFeatureRepository;
 
 @Configuration
 @EnableAsync
+@EnableRetry
 public class TaskPoolApplicationConfiguration implements AsyncConfigurer{
 
 	@Override

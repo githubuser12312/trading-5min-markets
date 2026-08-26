@@ -37,5 +37,7 @@ public class Sma10CrossOverFeature extends AbstractSmaFeature {
 		nowMinus2 = nowMinus1;
 		nowMinus1 = marketData;
 	}
+
+
 	
 }

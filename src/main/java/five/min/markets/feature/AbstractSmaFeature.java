@@ -18,7 +18,19 @@ public  abstract class AbstractSmaFeature extends AbstractBufferedFeature  imple
 		super((int) featureType.config.get("length"), marketDataFeatureRepository);
 		this.featureType = featureType;
 	}
-
+	
+	@Override
+	public MarketDataFeature getFeature(MarketData marketData) {
+		MarketDataFeature marketDataFeature = null;
+		if(average != null) {
+			marketDataFeature = getFeatureFromDb(marketData);
+			mapFeatureValue(marketDataFeature, marketData);
+			marketDataFeatureRepository.save(marketDataFeature);
+		}
+		update(marketData);
+		return marketDataFeature;
+	}
+	
 	protected void update(MarketData marketData) {
 		if(isFull()) {
 			MarketData removed = (MarketData) buffer.remove();
@@ -33,12 +45,10 @@ public  abstract class AbstractSmaFeature extends AbstractBufferedFeature  imple
 
 	@Override
 	public void updateFeature(MarketData marketData) {
-		if(average != null) {
-			MarketDataFeature marketDataFeature = getFeature(marketData);
-			mapFeatureValue(marketDataFeature, marketData);
+		MarketDataFeature marketDataFeature = getFeature(marketData);
+		if(marketDataFeature != null) {
 			marketDataFeatureRepository.save(marketDataFeature);
 		}
-		update(marketData);
 	}
 	
 	protected abstract void mapFeatureValue(MarketDataFeature marketDataFeature, MarketData marketData);

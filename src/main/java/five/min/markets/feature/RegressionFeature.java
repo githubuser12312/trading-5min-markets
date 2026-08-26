@@ -26,10 +26,10 @@ public class RegressionFeature extends AbstractFeature {
 	}
 
 	@Override
-	public void updateFeature(MarketData marketData) {
+	public MarketDataFeature getFeature(MarketData marketData) {
 		if(data.size() < length) {
 			data.add(marketData.getClose().doubleValue());
-			return;
+			return null;
 		}
 		SimpleRegression simpleRegression = new SimpleRegression();
 		for(int i = 0; i < data.size(); i++) {
@@ -41,16 +41,25 @@ public class RegressionFeature extends AbstractFeature {
 		} else {
 			slope = Math.ceil(slope * 100) / 100;
 		}
-		MarketDataFeature markteDataFeature = getFeature(marketData);
+		MarketDataFeature markteDataFeature = getFeatureFromDb(marketData);
 		markteDataFeature.setDoubleValue(slope);
-		marketDataFeatureRepository.save(markteDataFeature);
 		data.remove(0);
 		data.add(marketData.getClose().doubleValue());
+		return markteDataFeature;
+	}
+	
+	@Override
+	public void updateFeature(MarketData marketData) {
+		MarketDataFeature markteDataFeature = getFeature(marketData);
+		if(markteDataFeature != null) {
+			marketDataFeatureRepository.save(markteDataFeature);
+		}
 	}
 
 	@Override
 	public FeatureType getFeatureType() {
 		return featureType;
 	}
+
 
 }

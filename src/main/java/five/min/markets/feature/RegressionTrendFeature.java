@@ -38,25 +38,25 @@ public class RegressionTrendFeature extends AbstractFeature {
 	}
 
 	@Override
-	public void updateFeature(MarketData marketData) {
+	public MarketDataFeature getFeature(MarketData marketData) {
 		List<NTileStat> nTileStats = nTileStatRepository.findByMarketAndStatType(
 				marketData.getMarket(), statType, Sort.by(Direction.ASC, "tile"));
 		MarketDataFeature regressionFeature = marketDataFeatureRepository
 				.findByMarketDataEqualsAndFeatureTypeEquals(marketData, baseFeatureType);
 		if(regressionFeature == null) {
 			log.info("No feature for {} and market data {}", baseFeatureType, marketData.getId());
-			return;
+			return null;
 		}
 		Double slope = regressionFeature.getDoubleValue();
 		if(slope == null) {
 			log.info("No value for feature {} and market data {}", baseFeatureType, marketData.getId());
-			return;
+			return null;
 		}
 		if(isDownSlope && slope >= 0) {
 			log.debug("Slope is positive feature is for down slope");
-			return;
+			return null;
 		}
-		MarketDataFeature trendFeature = getFeature(marketData);
+		MarketDataFeature trendFeature = getFeatureFromDb(marketData);
 		NTileStat applicable = null;
 		for(int i = 0, len = nTileStats.size(); i < len; i++) {
 			NTileStat stat = nTileStats.get(i);
@@ -68,11 +68,19 @@ public class RegressionTrendFeature extends AbstractFeature {
 		if(applicable == null) {
 			log.error("Applicable stat is null for feature {}, base feature {}, slope {}", 
 					featureType, baseFeatureType, slope);
-			return;
+			return null;
 		}
 		TrendClassification trend = TrendClassification.trend(applicable.getTile(), !isDownSlope);
 		trendFeature.setStringValue(trend.name());
-		marketDataFeatureRepository.save(trendFeature);
+		return trendFeature;
+	}
+
+	@Override
+	public void updateFeature(MarketData marketData) {
+		MarketDataFeature trendFeature = getFeature(marketData);
+		if(trendFeature != null) {
+			marketDataFeatureRepository.save(trendFeature);
+		}
 	} 
 
 	@Override

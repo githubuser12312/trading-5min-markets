@@ -3,6 +3,7 @@ package five.min.markets.binance.marketdata;
 import java.io.File;
 import java.time.LocalDate;
 
+import org.springframework.resilience.annotation.Retryable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +26,7 @@ public class BinanceDataDownload {
 	}
 	
 	@Async
+	@Retryable
 	public void getAndSave(LocalDate start) {
 		try {
 			File csvFile = binanceCSVApi.getCsvFile(binanceConfig.getMarketCode(), binanceConfig.getPeriod(), start);
