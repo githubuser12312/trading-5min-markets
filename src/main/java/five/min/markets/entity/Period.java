@@ -1,12 +1,14 @@
 package five.min.markets.entity;
 
+import com.binance.connector.client.spot.websocket.stream.model.Interval;
+
 public enum Period {
-	FIVE_MINUTES("5m"),
-	ONE_SECOND("1s");
+	FIVE_MINUTES(Interval.INTERVAL_5m),
+	ONE_SECOND(Interval.INTERVAL_1s);
 	
-	public final String binanceValue;
+	public final Interval binanceValue;
 	
-	private Period(String binanceValue) {
+	private Period(Interval binanceValue) {
 		this.binanceValue = binanceValue;
 	}
 }

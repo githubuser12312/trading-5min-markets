@@ -20,7 +20,7 @@ public class CsvDownloanUrl {
 	
 	public String toString() {
 		return baseUrl.replace("{code}", code)
-				.replace("{period}", timePeriod.binanceValue)
+				.replace("{period}", timePeriod.binanceValue.getValue())
 				.replace("{yyyy-MM-dd}", formatter.format(date));
 	}
 	
