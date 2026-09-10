@@ -11,7 +11,7 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "string_probability", uniqueConstraints = {
-		@UniqueConstraint(columnNames = {"proability_mass_container_id", "prediction_bar_up", "feature_value_last_bar"})
+		@UniqueConstraint(columnNames = {"proability_mass_container_id", "prediction_bar_up", "string_value_last_bar"})
 })
 @DiscriminatorValue(value = "STRING")
 @Getter
