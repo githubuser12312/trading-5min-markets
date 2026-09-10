@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.UUID;
 
 import org.hibernate.annotations.Audited;
@@ -26,20 +28,32 @@ public class BooleanProbabilityMassTest {
 	private ProbabilityMassContainerRepository probabilityMassContainerRepository;
 	@Autowired
 	private MarketRepository marketRepository;
+	@Autowired
+	private MarketDataRepository marketDataRepository;
 	
 	@Autowired
 	private ProbabilityMassDataRepository probabilityMassDataRepository;
 	
-	private Market createMarket() {
+	private MarketData createMarket() {
 		Market market = new Market();
 		market.setCode(UUID.randomUUID().toString().substring(0, 20));
 		market.setSource(Source.BINANCE);
 		market.setPeriod(Period.FIVE_MINUTES);
-		return marketRepository.save(market);
+		MarketData marketData = new MarketData();
+		marketData.setStart(Instant.now());
+		marketData.setHigh(BigDecimal.ONE);
+		marketData.setLow(BigDecimal.ONE);
+		marketData.setOpen(BigDecimal.ONE);
+		marketData.setClose(BigDecimal.ONE);
+		marketData.setUp(false);
+		marketData.setVolume(BigDecimal.ONE);
+		market = marketRepository.save(market);
+		marketData.setMarket(market);
+		return marketDataRepository.save(marketData);
 		
 	}
 	
-	private ProbabilityMassContainer createProbabilityMassContainer(Market market) {
+	private ProbabilityMassContainer createProbabilityMassContainer(MarketData market) {
 		ProbabilityMassContainer probabilityMassContainer = new ProbabilityMassContainer();
 		probabilityMassContainer.setFeatureType(FeatureType.LAST_BAR_UP);
 		probabilityMassContainer.setMarket(market);
@@ -58,7 +72,7 @@ public class BooleanProbabilityMassTest {
 	
 	@Test
 	public void testBarBeforeProbabilityMass() {
-		Market market = createMarket();
+		MarketData market = createMarket();
 		ProbabilityMassContainer probabilityMassContainer = createProbabilityMassContainer(market);
 		BooleanProbabilityMass barBeforeProbabilityMass = createBarBeforeProbabilityMass(probabilityMassContainer);
 		assertNotNull(barBeforeProbabilityMass);

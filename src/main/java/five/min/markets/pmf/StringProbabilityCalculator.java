@@ -1,11 +1,15 @@
 package five.min.markets.pmf;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
 import five.min.markets.entity.FeatureType;
 import five.min.markets.entity.Market;
+import five.min.markets.entity.MarketData;
 import five.min.markets.entity.ProbabilityMassContainer;
 import five.min.markets.entity.StringProbabilityMass;
 import five.min.markets.repo.MarketDataFeatureRepository;
@@ -34,21 +38,24 @@ public class StringProbabilityCalculator extends AbstractProbabilityCalculator {
 	}
 
 	@Override
-	public void caculateProbaility(Market market) {
+	public void caculateProbaility(MarketData market) {
 		Set<String> featureValues = getFeatureValues(market);
 		log.info("{} located feature values {}", getFeatureType(), featureValues);
+		Instant minDateInclusive = market.getMarket().getLookBackDateInclusive(market);
 		for(String featureValue : featureValues) {
-			calculateProbaility(market, true, featureValue);
-			calculateProbaility(market, false, featureValue);
+			calculateProbaility(market, true, featureValue, minDateInclusive);
+			calculateProbaility(market, false, featureValue, minDateInclusive);
 		}
 	}
 	
-	private void calculateProbaility(Market market, boolean predictionBar, String featureValue) {
+	private void calculateProbaility(MarketData market, boolean predictionBar, String featureValue, Instant minDateInclusive) {
+
 		Long numerator = marketDataFeatureRepository.featurePredictionNumerator(
-				market, getFeatureType(), predictionBar, featureValue);
+				market, getFeatureType(), predictionBar, featureValue, minDateInclusive);
 		Long denominator = marketDataFeatureRepository.featurePredictionDenominator(
-				market, getFeatureType(), featureValue);
-		log.info("numerator {}, denominator {} currentBar {}, featureValue {}", numerator, denominator, predictionBar, featureValue);
+				market, getFeatureType(), featureValue, minDateInclusive);
+		log.debug("numerator {}, denominator {} currentBar {}, featureValue {}, minDate {}, maxDate {}", 
+				numerator, denominator, predictionBar, featureValue, minDateInclusive, market.getStart());
 		ProbabilityMassContainer container = getContainer(market);
 		StringProbabilityMass stringProbabilityMass = getBarBeforeProbabilityMass(container, predictionBar, featureValue);
 		stringProbabilityMass.setDenominator(denominator);
@@ -70,7 +77,7 @@ public class StringProbabilityCalculator extends AbstractProbabilityCalculator {
 		return barBeforeProbabilityMass;
 	}
 
-	protected Set<String> getFeatureValues(Market market) {
+	protected Set<String> getFeatureValues(MarketData market) {
 		return marketDataFeatureRepository.findFeatureValues(market, getFeatureType());
 	}
 }

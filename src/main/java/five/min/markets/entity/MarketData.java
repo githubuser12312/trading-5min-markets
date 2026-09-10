@@ -2,6 +2,7 @@ package five.min.markets.entity;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -20,6 +21,8 @@ import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
@@ -61,8 +64,12 @@ public class MarketData {
 	private BigDecimal volume;
 	@Column(name = "up", columnDefinition = "boolean", nullable = false)
 	private Boolean up;
+	@Column(name = "percent", columnDefinition = "decimal(36,18)")
+	private BigDecimal percent;
 	@OneToMany(mappedBy = "marketData")
 	private Set<MarketDataFeature> features;
+	
+	
 	public void setDirection() {
 		if(open.compareTo(close) >= 0) {
 			up = Boolean.FALSE;
@@ -70,5 +77,9 @@ public class MarketData {
 		else {
 			up = Boolean.TRUE;
 		}
+	}
+	
+	public void setPercent() {
+		this.percent = close.subtract(open).divide(open, RoundingMode.HALF_DOWN).setScale(6, RoundingMode.HALF_DOWN);
 	}
 }

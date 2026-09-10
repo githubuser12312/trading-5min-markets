@@ -1,5 +1,7 @@
 package five.min.markets.repo;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -17,59 +19,74 @@ public interface MarketDataFeatureRepository extends JpaRepository<MarketDataFea
 
 	MarketDataFeature findByMarketDataEqualsAndFeatureTypeEquals(MarketData data, FeatureType feature);
 	
+	List<MarketDataFeature> findByMarketDataEquals(MarketData data);
+	
 	@Query("""
 			SELECT COUNT(*)
 			FROM MarketDataFeature f
 			JOIN f.marketData d
-			WHERE d.market = :market
+			WHERE d.market = :#{#market.market}
+			AND d.start < :#{#market.start} 
+			AND d.start >= :minDateInclusive
 			AND f.featureType = :featureType
 			AND f.booleanValue = :value
 			""")
 	Long featurePredictionDenominator(
-			@Param("market") Market market, 
-			@Param("featureType") FeatureType featureType, 
-			@Param("value") Boolean value);
+			MarketData market, 
+			FeatureType featureType, 
+			Boolean value,
+			Instant minDateInclusive
+			);
 
 	@Query("""
 			SELECT COUNT(*) 
-			FROM MarketData d 
-			JOIN d.features f 
-			WHERE d.market = :market 
+			FROM MarketDataFeature f
+			JOIN f.marketData d
+			WHERE d.market = :#{#market.market}
+			AND d.start < :#{#market.start} 
+			AND d.start >= :minDateInclusive
 			AND f.featureType = :featureType
-			AND d.up = :up
+			AND d.up = :isUp
 			AND f.booleanValue = :featureValue
 			""")
-	Long featurePredictionNumerator(@Param("market") Market market, 
-			@Param("featureType") FeatureType featureType, 
-			@Param("up") Boolean isUp, 
-			@Param("featureValue") Boolean featureValue);
+	Long featurePredictionNumerator(@Param("market") MarketData market, 
+			FeatureType featureType, 
+			Boolean isUp, 
+			Boolean featureValue,
+			Instant minDateInclusive);
 	
 	@Query("""
 			SELECT COUNT(*)
 			FROM MarketDataFeature f
 			JOIN f.marketData d
-			WHERE d.market = :market
+			WHERE d.market = :#{#market.market}
+			AND d.start < :#{#market.start} 
+			AND d.start >= :minDateInclusive
 			AND f.featureType = :featureType
 			AND f.stringValue = :value
 			""")
 	Long featurePredictionDenominator(
-			@Param("market") Market market, 
-			@Param("featureType") FeatureType featureType, 
-			@Param("value") String value);
+			MarketData market, 
+			FeatureType featureType, 
+			String value,
+			Instant minDateInclusive);
 	
 	@Query("""
 			SELECT COUNT(*) 
-			FROM MarketData d 
-			JOIN d.features f 
-			WHERE d.market = :market 
+			FROM MarketDataFeature f
+			JOIN f.marketData d
+			WHERE d.market = :#{#market.market}
+			AND d.start < :#{#market.start} 
+			AND d.start >= :minDateInclusive
 			AND f.featureType = :featureType
-			AND d.up = :up
+			AND d.up = :isUp
 			AND f.stringValue = :featureValue
 			""")
-	Long featurePredictionNumerator(@Param("market") Market market, 
-			@Param("featureType") FeatureType featureType, 
-			@Param("up") Boolean isUp, 
-			@Param("featureValue") String featureValue);
+	Long featurePredictionNumerator(@Param("market") MarketData market, 
+			FeatureType featureType, 
+			Boolean isUp, 
+			String featureValue,
+			Instant minDateInclusive);
 	
 	@Query(value = """
 			with double_ntiles as (
@@ -80,15 +97,19 @@ public interface MarketDataFeatureRepository extends JpaRepository<MarketDataFea
 				where feature_type = :featureType 
 				and double_value > 0
 				and m.id = :marketId
+				and d.start >= :minDateInclusive
+				and d.start < :maxDateExclusive
 				)
 			select tile, avg(val) 
 			from double_ntiles
 			group by tile
 			""", nativeQuery = true)
 		List<NTileProjection> calculateNtileProjectionOverFeatureGreaterThan0(
-				@Param("tiles") Integer numTiles, 
-				@Param("featureType") FeatureType featureType,
-				@Param("marketId") Integer marketId); 
+				Integer tiles, 
+				FeatureType featureType,
+				Integer marketId,
+				Instant minDateInclusive,
+				Instant maxDateExclusive); 
 	
 	@Query(value = """
 			with double_ntiles as (
@@ -99,15 +120,19 @@ public interface MarketDataFeatureRepository extends JpaRepository<MarketDataFea
 				where feature_type = :featureType 
 				and double_value <= 0
 				and m.id = :marketId
+				and d.start >= :minDateInclusive
+				and d.start < :maxDateExclusive
 				)
 			select tile, avg(val) 
 			from double_ntiles
 			group by tile
 			""", nativeQuery = true)
 		List<NTileProjection> calculateNtileProjectionOverFeatureLessThanOrEqual0(
-				@Param("tiles") Integer numTiles, 
-				@Param("featureType") FeatureType featureType,
-				@Param("marketId") Integer marketId); 
+				Integer tiles, 
+				FeatureType featureType,
+				Integer marketId,
+				Instant minDateInclusive,
+				Instant maxDateExclusive); 
 	
 	@Query("""
 			SELECT DISTINCT stringValue
@@ -115,7 +140,7 @@ public interface MarketDataFeatureRepository extends JpaRepository<MarketDataFea
 			JOIN f.marketData d
 			JOIN d.market m
 			WHERE f.featureType = :featureType
-			AND m = :market
+			AND m = :#{#market.market}
 			""")
-	Set<String> findFeatureValues(@Param("market") Market market, @Param("featureType") FeatureType featureType);
+	Set<String> findFeatureValues(MarketData market, FeatureType featureType);
 }

@@ -4,8 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Set;
 import java.util.UUID;
@@ -37,9 +39,11 @@ public class MarketDataTest {
 		
 	}
 	
-	private MarketData createMarketData(Market market, int count) {
-		LocalDateTime start = LocalDateTime.of(2026, 7, 14, 0, 0);
-		start = start.plus(5 * count, ChronoUnit.MINUTES);
+	private Instant createInstant(int minutesAgo) {
+		return ZonedDateTime.now().minus(minutesAgo, ChronoUnit.MINUTES).withNano(0).toInstant();
+	}
+	
+	private MarketData createMarketData(Market market, Instant start) {
 		MarketData marketData = new MarketData();
 		marketData.setMarket(market);
 		marketData.setClose(BigDecimal.TWO);
@@ -47,7 +51,7 @@ public class MarketDataTest {
 		marketData.setHigh(BigDecimal.ONE);
 		marketData.setLow(BigDecimal.ONE);
 		marketData.setVolume(BigDecimal.ONE);
-		marketData.setStart(start.toInstant(ZoneOffset.UTC));
+		marketData.setStart(start);
 		marketData.setDirection();
 		return marketDataRepository.save(marketData);
 		
@@ -64,8 +68,8 @@ public class MarketDataTest {
 	@Test
 	public void testMarketData() {
 		Market market = createMarket();
-		MarketData marketData1 = createMarketData(market, 0);
-		MarketData marketData2 = createMarketData(market, 1);
+		MarketData marketData1 = createMarketData(market,createInstant(5));
+		MarketData marketData2 = createMarketData(market, createInstant(0));
 		Set<MarketData> fromDb = marketDataRepository.findByMarketEquals(market);
 		assertEquals(2, fromDb.size());
 		assertTrue(fromDb.contains(marketData1));
@@ -75,26 +79,32 @@ public class MarketDataTest {
 	@Test
 	public void testMarketDataFeature() {
 		Market market = createMarket();
-		MarketData marketData1 = createMarketData(market, 0);
-		MarketData marketData2 = createMarketData(market, 1);
-		MarketDataFeature marketDataFeature = createMarketDataFeature(marketData2);
-		Long countFeature = marketDataFeatureRepository.featurePredictionNumerator(market,
+		MarketData marketData2 = createMarketData(market,createInstant(10));
+		MarketData marketData1 = createMarketData(market, createInstant(5));
+		MarketData marketData3 = createMarketData(market, createInstant(0));
+		MarketDataFeature marketDataFeature2 = createMarketDataFeature(marketData2);
+		MarketDataFeature marketDataFeature1 = createMarketDataFeature(marketData1);
+		MarketDataFeature marketDataFeature3 = createMarketDataFeature(marketData3);
+		Long countFeature = marketDataFeatureRepository.featurePredictionNumerator(marketData3,
 				FeatureType.LAST_BAR_UP, 
 				true,
-				true);
-		assertEquals(1L, countFeature);
+				true,
+				marketData2.getStart());
+		assertEquals(2L, countFeature);
 	}
 	
 	@Test
 	public void testMarketDataFeatureCountTotalFeatures() {
 		Market market = createMarket();
-		MarketData marketData1 = createMarketData(market, 0);
-		MarketData marketData2 = createMarketData(market, 1);
-		MarketDataFeature marketDataFeature = createMarketDataFeature(marketData2);
+		MarketData marketData1 = createMarketData(market,  createInstant(10));
+		MarketData marketData2 = createMarketData(market,  createInstant(5));
+		MarketData marketData3 = createMarketData(market, createInstant(0));
 		MarketDataFeature marketDataFeature2 = createMarketDataFeature(marketData1);
-		long count = marketDataFeatureRepository.featurePredictionDenominator(market, 
-				FeatureType.LAST_BAR_UP, true);
-		assertEquals(2L, count);;
+		MarketDataFeature marketDataFeature = createMarketDataFeature(marketData2);
+		MarketDataFeature marketDataFeature3 = createMarketDataFeature(marketData3);
+		long count = marketDataFeatureRepository.featurePredictionDenominator(marketData3, 
+				FeatureType.LAST_BAR_UP, true, marketData1.getStart());
+		assertEquals(2L, count);
 	}
 	
 }

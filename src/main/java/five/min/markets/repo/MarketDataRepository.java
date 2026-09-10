@@ -3,6 +3,9 @@ package five.min.markets.repo;
 import java.time.Instant;
 import java.util.Set;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,6 +19,10 @@ import five.min.markets.entity.MarketData;
 public interface MarketDataRepository extends JpaRepository<MarketData, Integer> {
 
 	Set<MarketData> findByMarketEquals(Market market);
+	
+	Page<MarketData> findByMarketEquals(Market market, Pageable pageable);
+	
+	Slice<MarketData> findByMarketEqualsAndStartGreaterThan(Market market, Instant after, Pageable pageable);
 	
 	MarketData findByMarketEqualsAndStartEquals(Market market, Instant start);
 	

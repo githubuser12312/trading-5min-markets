@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import five.min.markets.entity.Market;
+import five.min.markets.entity.MarketData;
 import five.min.markets.repo.MarketRepository;
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,20 +14,22 @@ import lombok.extern.slf4j.Slf4j;
 public class CalculateFeatureProbability {
 
 	private List<ProbabilityCalculator> calculators;
-	private MarketRepository marketRepository;
 	
-	public CalculateFeatureProbability(List<ProbabilityCalculator> calculators,
-			MarketRepository marketRepository) {
+	public CalculateFeatureProbability(List<ProbabilityCalculator> calculators) {
 		this.calculators = calculators;
-		this.marketRepository = marketRepository;
 	}
 	
-	public void caculateProbabilityMasses() {
-		List<Market> markets = marketRepository.findAll();
-		for(Market market : markets) {
-			for(ProbabilityCalculator probabilityCalculator : calculators) {
-				log.info("Calculate probability for {} and {}", probabilityCalculator.getClass().getSimpleName(), market.getCode());
-				probabilityCalculator.caculateProbaility(market);
+	public void caculateProbabilityMasses(MarketData marketData, Integer order) {
+		if(!marketData.getMarket().isAggregationNow(marketData)) {
+			log.debug("No aggregation required");
+			return;
+		}
+		log.info("Aggregating data at {}", marketData.getStart().toString());
+		for(ProbabilityCalculator probabilityCalculator : calculators) {
+			if(probabilityCalculator.getFeatureType().order == order) {
+				log.debug("Calculate probability for {} and {}", 
+						probabilityCalculator.getClass().getSimpleName(), marketData.getMarket().getCode());
+				probabilityCalculator.caculateProbaility(marketData);
 			}
 		}
 	} 

@@ -1,8 +1,12 @@
 package five.min.markets.stat;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 import five.min.markets.entity.Market;
+import five.min.markets.entity.MarketData;
 import five.min.markets.entity.StatType;
 import five.min.markets.entity.projection.NTileProjection;
 import five.min.markets.repo.MarketDataFeatureRepository;
@@ -16,9 +20,10 @@ public class FeatureTypeGreaterThanZeroNTileStat extends FeatureTypeNtileStat {
 	}
 
 	@Override
-	List<NTileProjection> getTilesProjection(Market market) {
+	List<NTileProjection> getTilesProjection(MarketData marketData) {
+		Instant minDateInclusive =marketData.getMarket().getLookBackDateInclusive(marketData);
 		return marketDataFeatureRepository.calculateNtileProjectionOverFeatureGreaterThan0(
-				tiles, featureType, market.getId());
+				tiles, featureType, marketData.getMarket().getId(), minDateInclusive, marketData.getStart());
 	}
 
 }

@@ -20,6 +20,7 @@ import lombok.Setter;
 public class BooleanProbabilityMass extends ProbabilityMassData {
 
 	@EqualsAndHashCode.Include
-	@Column(nullable = false, name = "feature_value_last_bar")
+	@Column(nullable = false, name = "boolean_value_last_bar")
 	private boolean featureValue;
+	
 }

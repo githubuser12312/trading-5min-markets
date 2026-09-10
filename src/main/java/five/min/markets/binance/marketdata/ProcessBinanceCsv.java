@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.function.Consumer;
 
 import org.springframework.resilience.annotation.Retryable;
 import org.springframework.stereotype.Repository;
@@ -32,7 +33,7 @@ public class ProcessBinanceCsv {
 	}
 
 	@Retryable
-	public void processCsv(File csv, String code, Period period) throws FileNotFoundException, IOException {
+	public void processCsv(File csv, String code, Period period, Consumer<MarketData> callback) throws FileNotFoundException, IOException {
 		Market market = marketRepository.findBySourceEqualsAndCodeEqualsAndPeriodEquals(Source.BINANCE, code, period);
 		if(market == null) {
 			market = new Market();
@@ -41,11 +42,11 @@ public class ProcessBinanceCsv {
 			market.setPeriod(period);
 			market = marketRepository.save(market);
 		}
-		readCsv(csv, market);
+		readCsv(csv, market, callback);
 		
 	} 
 	
-	private void readCsv(File file, Market market) throws FileNotFoundException, IOException {
+	private void readCsv(File file, Market market, Consumer<MarketData> callback) throws FileNotFoundException, IOException {
 		try(CSVReader csvReader = new CSVReader(new FileReader(file))) {
 			csvReader.forEach(line -> {
 				boolean isMicroSeconds = line[0].length() > 13;
@@ -71,7 +72,9 @@ public class ProcessBinanceCsv {
 				data.setLow(low);
 				data.setVolume(volume);
 				data.setDirection();
-				marketDataRepository.save(data);
+				data.setPercent();
+				data = marketDataRepository.save(data);
+				callback.accept(data);
 			});
 		}
 	}

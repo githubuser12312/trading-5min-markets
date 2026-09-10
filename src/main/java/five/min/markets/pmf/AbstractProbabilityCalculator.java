@@ -1,6 +1,7 @@
 package five.min.markets.pmf;
 
 import five.min.markets.entity.Market;
+import five.min.markets.entity.MarketData;
 import five.min.markets.entity.ProbabilityMassContainer;
 import five.min.markets.repo.ProbabilityMassContainerRepository;
 
@@ -13,7 +14,7 @@ public abstract class AbstractProbabilityCalculator implements ProbabilityCalcul
 		this.probabilityMassContainerRepository = probabilityMassContainerRepository;
 	}
 
-	protected ProbabilityMassContainer getContainer(Market market) {
+	protected ProbabilityMassContainer getContainer(MarketData market) {
 		ProbabilityMassContainer probabilityMassContainer = probabilityMassContainerRepository.findByMarketEqualsAndFeatureTypeEquals(
 				market, getFeatureType());
 		if(probabilityMassContainer == null) {

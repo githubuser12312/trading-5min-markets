@@ -39,6 +39,6 @@ public enum StatType {
 	}
 	
 	public static Integer maxOrder() {
-		return Stream.of(StatType.values()).mapToInt(v -> v.ordinal()).max().getAsInt();
+		return Stream.of(StatType.values()).mapToInt(v -> v.order).max().getAsInt();
 	}
 }

@@ -1,5 +1,8 @@
 package five.min.markets.entity;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
@@ -18,16 +21,16 @@ import lombok.Setter;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Getter @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class MarketStat {
+public abstract class MarketStat {
 
 	@Column(name = "id", unique = true)
 	@GeneratedValue(strategy = GenerationType.TABLE)
 	@Id
 	private Integer id;
 	@ManyToOne
-	@JoinColumn(name = "internal_market_id")
+	@JoinColumn(name = "market_data_id")
 	@EqualsAndHashCode.Include
-	private Market market;
+	private MarketData market;
 	@Enumerated
 	@Column(name = "stat_type")
 	@EqualsAndHashCode.Include

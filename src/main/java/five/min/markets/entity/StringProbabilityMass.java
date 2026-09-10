@@ -20,6 +20,6 @@ import lombok.Setter;
 public class StringProbabilityMass extends ProbabilityMassData {
 	
 	@EqualsAndHashCode.Include
-	@Column(nullable = false, name = "feature_value_last_bar")
+	@Column(nullable = false, name = "string_value_last_bar")
 	private String featureValue;
 }

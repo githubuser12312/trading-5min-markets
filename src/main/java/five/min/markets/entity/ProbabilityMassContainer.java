@@ -1,5 +1,6 @@
 package five.min.markets.entity;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 import jakarta.persistence.Column;
@@ -33,7 +34,7 @@ public class ProbabilityMassContainer {
 	@ManyToOne
 	@JoinColumn(name = "internal_market_id")
 	@EqualsAndHashCode.Include
-	private Market market;
+	private MarketData market;
 	@Enumerated
 	@Column(name = "feature_type")
 	@EqualsAndHashCode.Include

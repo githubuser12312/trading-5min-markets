@@ -1,10 +1,15 @@
 package five.min.markets.pmf;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+
 import org.springframework.stereotype.Component;
 
 import five.min.markets.entity.BooleanProbabilityMass;
 import five.min.markets.entity.FeatureType;
 import five.min.markets.entity.Market;
+import five.min.markets.entity.MarketData;
 import five.min.markets.entity.ProbabilityMassContainer;
 import five.min.markets.repo.BooleanProbabilityMassRepository;
 import five.min.markets.repo.MarketDataFeatureRepository;
@@ -33,18 +38,20 @@ public abstract class AbstractBooleanProbabilityCalculator extends AbstractProba
 	}
 
 	@Override
-	public void caculateProbaility(Market market) {
-		calculateProbaility(market, true, true);
-		calculateProbaility(market, true, false);
-		calculateProbaility(market, false, true);
-		calculateProbaility(market, false, false);
+	public void caculateProbaility(MarketData market) {
+		Instant minDateInclusive = market.getMarket().getLookBackDateInclusive(market);
+		calculateProbaility(market, true, true, minDateInclusive);
+		calculateProbaility(market, true, false, minDateInclusive);
+		calculateProbaility(market, false, true, minDateInclusive);
+		calculateProbaility(market, false, false, minDateInclusive);
 	}
 
-	private void calculateProbaility(Market market, boolean featureValue, boolean predictionBar) {
+	private void calculateProbaility(MarketData market, boolean featureValue, boolean predictionBar, Instant minDateInclusive) {
+
 		Long numerator = marketDataFeatureRepository.featurePredictionNumerator(market, getFeatureType(),
-				predictionBar, featureValue);
+				predictionBar, featureValue, minDateInclusive);
 		Long denominator = marketDataFeatureRepository.featurePredictionDenominator(market,
-				getFeatureType(), featureValue);
+				getFeatureType(), featureValue, minDateInclusive);
 		log.info("numerator {}, denominator {} feature value {}, prediction bar {}, feature type {}", numerator, denominator,
 				featureValue, predictionBar, getFeatureType());
 		ProbabilityMassContainer container = getContainer(market);

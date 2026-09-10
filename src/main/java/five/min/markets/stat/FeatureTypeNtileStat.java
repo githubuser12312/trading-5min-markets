@@ -1,10 +1,14 @@
 package five.min.markets.stat;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
+import org.springframework.data.domain.PageRequest;
+
 import five.min.markets.entity.FeatureType;
 import five.min.markets.entity.Market;
+import five.min.markets.entity.MarketData;
 import five.min.markets.entity.NTileStat;
 import five.min.markets.entity.StatType;
 import five.min.markets.entity.projection.NTileProjection;
@@ -18,7 +22,7 @@ public abstract class FeatureTypeNtileStat extends AbstractCalculateStat {
 	protected FeatureType featureType;
 	protected Integer tiles;
 	protected MarketDataFeatureRepository marketDataFeatureRepository;
-	private NTileStatRepository nTileStatRepository;
+	protected NTileStatRepository nTileStatRepository;
 	
 	public FeatureTypeNtileStat(StatType statType, 
 			MarketDataFeatureRepository marketDataFeatureRepository,
@@ -30,25 +34,26 @@ public abstract class FeatureTypeNtileStat extends AbstractCalculateStat {
 		this.nTileStatRepository = nTileStatRepository;
 	}
 	
-	abstract List<NTileProjection> getTilesProjection(Market market);
+	abstract List<NTileProjection> getTilesProjection(MarketData marketData);
 
 	@Override
-	public void calculateStat(Market market) {
-		List<NTileProjection> nTiles = getTilesProjection(market);
-		projectionToStatAndSave(market, nTiles);
+	public void calculateStat(MarketData marketData) {
+		List<NTileProjection> nTiles = getTilesProjection(marketData);
+		projectionToStatAndSave(marketData, nTiles);
 	}
 	
-	private void projectionToStatAndSave(Market market, Collection<NTileProjection> data) {
+	private void projectionToStatAndSave(MarketData marketData, Collection<NTileProjection> data) {
 		data.forEach(d -> {
-			NTileStat stat = getStat(market, d);
+			NTileStat stat = getStat(marketData, d);
 			stat.setDoubleValue(d.value());
 			nTileStatRepository.save(stat);
 		});
 	}
 
-	private NTileStat getStat(Market market, NTileProjection nTileProjection) {
-		NTileStat stat = nTileStatRepository.findByMarketAndStatTypeAndTile(market, 
-				getStatType(), nTileProjection.tile().intValue());
+	private NTileStat getStat(MarketData market, NTileProjection nTileProjection) {
+		List<NTileStat> stats = nTileStatRepository.findByMarketAndStatTypeAndTile(market, 
+				getStatType(), nTileProjection.tile().intValue(), PageRequest.of(0, 1));
+		NTileStat stat = stats.isEmpty() ? null : stats.get(0);
 		if(stat == null) {
 			stat = new NTileStat();
 			stat.setMarket(market);

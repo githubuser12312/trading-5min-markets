@@ -2,6 +2,7 @@ package five.min.markets.feature;
 
 import java.util.List;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 
@@ -23,6 +24,7 @@ public class RegressionTrendFeature extends AbstractFeature {
 	private StatType statType;
 	private FeatureType baseFeatureType;
 	private Boolean isDownSlope;
+	private Integer numTiles;
 	public RegressionTrendFeature(
 			MarketDataFeatureRepository marketDataFeatureRepository,
 			NTileStatRepository nTileStatRepository,
@@ -35,21 +37,22 @@ public class RegressionTrendFeature extends AbstractFeature {
 		this.statType = sourceStat;
 		this.baseFeatureType = baseFeatureType;
 		this.isDownSlope = (Boolean) featureType.config.get("isDown");
+		this.numTiles = (Integer) statType.config.get("tiles");
 	}
 
 	@Override
 	public MarketDataFeature getFeature(MarketData marketData) {
 		List<NTileStat> nTileStats = nTileStatRepository.findByMarketAndStatType(
-				marketData.getMarket(), statType, Sort.by(Direction.ASC, "tile"));
+				marketData, statType, PageRequest.of(0, numTiles));
 		MarketDataFeature regressionFeature = marketDataFeatureRepository
 				.findByMarketDataEqualsAndFeatureTypeEquals(marketData, baseFeatureType);
 		if(regressionFeature == null) {
-			log.info("No feature for {} and market data {}", baseFeatureType, marketData.getId());
+			log.debug("No feature for {} and market data {}", baseFeatureType, marketData.getId());
 			return null;
 		}
 		Double slope = regressionFeature.getDoubleValue();
 		if(slope == null) {
-			log.info("No value for feature {} and market data {}", baseFeatureType, marketData.getId());
+			log.debug("No value for feature {} and market data {}", baseFeatureType, marketData.getId());
 			return null;
 		}
 		if(isDownSlope && slope >= 0) {
@@ -66,7 +69,7 @@ public class RegressionTrendFeature extends AbstractFeature {
 			}
 		}
 		if(applicable == null) {
-			log.error("Applicable stat is null for feature {}, base feature {}, slope {}", 
+			log.debug("Applicable stat is null for feature {}, base feature {}, slope {}", 
 					featureType, baseFeatureType, slope);
 			return null;
 		}

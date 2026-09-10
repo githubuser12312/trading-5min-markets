@@ -19,7 +19,7 @@ public class BinanceDataDownloader implements CommandLineRunner {
 	
 	@Override
 	public void run(String... args) throws Exception {
-		downloandBinanceData.downloadAndUpdateData();
+		downloandBinanceData.downloadOnly();
 	}
 
 }

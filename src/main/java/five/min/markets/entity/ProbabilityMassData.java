@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.DiscriminatorType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -32,8 +33,11 @@ public  abstract class ProbabilityMassData {
 	@JoinColumn(name = "proability_mass_container_id")
 	@EqualsAndHashCode.Include
 	private ProbabilityMassContainer probabilityMassContainer;
+	@Column(name = "denominator")
 	private Long denominator;
+	@Column(name = "numerator")
 	private Long numerator;
+	@Column(name = "probability")
 	private Double probability;
 	@EqualsAndHashCode.Include
 	@Column(nullable = false, name = "prediction_bar_up")

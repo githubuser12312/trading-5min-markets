@@ -27,7 +27,7 @@ public class BernoulliBayesModel {
 		probabilities.add(value);
 	}
 	
-	public double getLikelyhood() {
+	public double getPosterior() {
 		return (numerator * prior) / ((numerator*prior) + (complement * (1-prior)));
 	}
 	

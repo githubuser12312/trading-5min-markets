@@ -2,11 +2,14 @@ package five.min.markets.binance.marketdata;
 
 import java.io.File;
 import java.time.LocalDate;
+import java.util.function.Consumer;
 
 import org.springframework.resilience.annotation.Retryable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import five.min.markets.entity.MarketData;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
@@ -25,18 +28,30 @@ public class BinanceDataDownload {
 		this.binanceConfig = binanceConfig;
 	}
 	
-	@Async
 	@Retryable
-	public void getAndSave(LocalDate start) {
+	@Transactional
+	public void getAndSave(LocalDate start, Consumer<MarketData> callback) {
+		File csvFile = null;
 		try {
-			File csvFile = binanceCSVApi.getCsvFile(binanceConfig.getMarketCode(), binanceConfig.getPeriod(), start);
+			csvFile = binanceCSVApi.getCsvFile(binanceConfig.getMarketCode(), binanceConfig.getPeriod(), start);
 			if(csvFile != null) {
 				log.info("Processing file {}", csvFile.getCanonicalPath());
-				processBinanceCsv.processCsv(csvFile, binanceConfig.getMarketCode(), binanceConfig.getPeriod());
-				csvFile.delete();
+				processBinanceCsv.processCsv(csvFile, binanceConfig.getMarketCode(), binanceConfig.getPeriod(), callback);
 			} 
 		} catch (Exception e) {
 			log.error("{}", e);
+			throw new RuntimeException(e);
+		} finally {
+			if(csvFile != null) {
+				csvFile.delete();
+			}
 		}
+	}
+	
+	@Async
+	@Retryable
+	@Transactional
+	public void getAndSaveAsync(LocalDate start) {
+		getAndSave(start, (m) -> {});
 	}
 }

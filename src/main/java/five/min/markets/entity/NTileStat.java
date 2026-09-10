@@ -12,7 +12,7 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "ntile_stat", uniqueConstraints = {
-		@UniqueConstraint(columnNames = {"internal_market_id", "stat_type", "tile"})
+		@UniqueConstraint(columnNames = {"market_data_id", "stat_type", "tile"})
 })
 @Getter @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)

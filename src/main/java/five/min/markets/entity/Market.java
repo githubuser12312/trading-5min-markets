@@ -1,7 +1,11 @@
 package five.min.markets.entity;
 
 import java.io.Serializable;
+import java.time.DayOfWeek;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -58,8 +62,39 @@ public class Market {
 	@Enumerated(EnumType.STRING)
 	@EqualsAndHashCode.Include
 	private Period period;
+	@Column(name = "aggregation_period", columnDefinition = "varchar(20)", nullable = false)
+	@Enumerated(EnumType.STRING)
+	private DataAggregationPeriod dataAggregationPeriod = DataAggregationPeriod.WEEKLY;
+	private java.time.Period dataAggregationLookbackPeriod = java.time.Period.of(0, 6, 0); 
 	
 	@OneToMany(mappedBy = "market", fetch = FetchType.LAZY)
 	private Set<MarketData> marketData;
 	
+	public boolean isAggregationNow(MarketData marketData) {
+		LocalDateTime candleStart = LocalDateTime.ofInstant(marketData.getStart(), ZoneId.systemDefault());
+		boolean isStartOfDay = candleStart.getHour() == 0 && candleStart.getMinute() == 0 && candleStart.getSecond() == 0;
+		boolean isStartOfWeek = candleStart.getDayOfWeek() == DayOfWeek.MONDAY;
+		boolean isStartOfMonth = candleStart.getDayOfMonth() == 1;
+		switch (dataAggregationPeriod) {
+		case DAILY: {
+			return isStartOfDay;
+		}
+		case WEEKLY : {
+			return isStartOfDay && isStartOfWeek;
+		}
+		case MONTHLY: {
+			return isStartOfDay && isStartOfMonth;
+		}
+		default:
+			throw new IllegalArgumentException("Unexpected value: " + dataAggregationPeriod);
+		}
+	}
+	
+	public Instant getLookBackDateInclusive(MarketData marketData) {
+		if(dataAggregationLookbackPeriod == null) {
+			dataAggregationLookbackPeriod = java.time.Period.of(20, 0, 0);
+		}
+		return LocalDateTime.ofInstant(marketData.getStart(), ZoneId.systemDefault())
+				.minus(dataAggregationLookbackPeriod).toInstant(ZoneOffset.UTC);
+	}
 }
