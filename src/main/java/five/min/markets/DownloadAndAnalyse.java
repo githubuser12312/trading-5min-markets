@@ -17,7 +17,7 @@ public class DownloadAndAnalyse implements CommandLineRunner {
 	
 	@Override
 	public void run(String... args) throws Exception {
-		downloandBinanceData.downloadOnlyAndAnalyse();
+		downloandBinanceData.updatedBinanceData();
 	}
 
 }

@@ -26,5 +26,6 @@ public interface MarketDataRepository extends JpaRepository<MarketData, Integer>
 	
 	MarketData findByMarketEqualsAndStartEquals(Market market, Instant start);
 	
-
+	@Query("SELECT MAX(d.start) FROM MarketData d JOIN d.market m ON m = :market")
+	Instant findLatestMarketDataForMarket(Market market);
 }
