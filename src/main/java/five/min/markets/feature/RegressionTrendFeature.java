@@ -2,6 +2,7 @@ package five.min.markets.feature;
 
 import java.util.List;
 
+import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -16,6 +17,7 @@ import five.min.markets.repo.MarketDataFeatureRepository;
 import five.min.markets.repo.NTileStatRepository;
 import lombok.extern.slf4j.Slf4j;
 
+@Scope("prototype")
 @Slf4j
 public class RegressionTrendFeature extends AbstractFeature {
 
@@ -89,6 +91,11 @@ public class RegressionTrendFeature extends AbstractFeature {
 	@Override
 	public FeatureType getFeatureType() {
 		return featureType;
+	}
+
+	@Override
+	public boolean initialise(MarketData marketData) {
+		return true;
 	}
 
 }

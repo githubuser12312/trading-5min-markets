@@ -1,5 +1,7 @@
 package five.min.markets.analysis;
 
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import five.min.markets.entity.FeatureType;
@@ -10,6 +12,7 @@ import five.min.markets.pmf.CalculateFeatureProbability;
 import five.min.markets.stat.CalculateStats;
 import lombok.extern.slf4j.Slf4j;
 
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 @Component
 @Slf4j
 public class AnalysisUpdater {

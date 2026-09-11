@@ -1,26 +1,35 @@
 package five.min.markets.feature;
 
+import java.util.List;
+
+import org.springframework.context.annotation.Scope;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 import five.min.markets.entity.FeatureType;
 import five.min.markets.entity.MarketData;
 import five.min.markets.entity.MarketDataFeature;
 import five.min.markets.repo.MarketDataFeatureRepository;
+import five.min.markets.repo.MarketDataRepository;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
+@Scope("prototype")
 public class LastBarFeatureMapper extends AbstractFeature {
 
 	private MarketData lastBar;
+	private MarketDataRepository marketDataRepository;
 	
-	public LastBarFeatureMapper(MarketDataFeatureRepository marketDataFeatureRepository) {
+	public LastBarFeatureMapper(MarketDataFeatureRepository marketDataFeatureRepository,
+			MarketDataRepository marketDataRepository) {
 		super(marketDataFeatureRepository);
+		this.marketDataRepository = marketDataRepository;
 	}
 
 	@Override
 	public MarketDataFeature getFeature(MarketData marketData) {
-		if(lastBar == null) {
+		if(lastBar == null && !initialise(marketData)) {
 			log.info("New dataset");
 			lastBar = marketData;
 			return null;
@@ -47,6 +56,15 @@ public class LastBarFeatureMapper extends AbstractFeature {
 	@Override
 	public FeatureType getFeatureType() {
 		return FeatureType.LAST_BAR_UP;
+	}
+
+	@Override
+	public boolean initialise(MarketData marketData) {
+		List<MarketData> barBefore = marketDataRepository.findBarsBefore(marketData, PageRequest.of(0, 1));
+		if(barBefore == null || barBefore.isEmpty()) return false;
+		lastBar = barBefore.get(0);
+		return true;
+		
 	}
 
 }

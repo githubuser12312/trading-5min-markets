@@ -1,5 +1,6 @@
 package five.min.markets.feature;
 
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import five.min.markets.entity.FeatureType;
@@ -8,6 +9,7 @@ import five.min.markets.entity.MarketDataFeature;
 import five.min.markets.repo.MarketDataFeatureRepository;
 
 @Component
+@Scope("prototype")
 public class Sma10CrossUnderFeature extends AbstractSmaFeature {
 
 	private MarketData nowMinus2 = null;

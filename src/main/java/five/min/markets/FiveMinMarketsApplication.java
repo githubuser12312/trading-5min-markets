@@ -24,5 +24,6 @@ public class FiveMinMarketsApplication {
     public void init() {
         // Sets the JVM default timezone to UTC
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+        System.out.println(TimeZone.getDefault().getID());
     }
 }

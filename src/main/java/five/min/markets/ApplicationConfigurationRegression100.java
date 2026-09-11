@@ -11,6 +11,7 @@ import five.min.markets.feature.RegressionTrendFeature;
 import five.min.markets.pmf.ProbabilityCalculator;
 import five.min.markets.pmf.StringProbabilityCalculator;
 import five.min.markets.repo.MarketDataFeatureRepository;
+import five.min.markets.repo.MarketDataRepository;
 import five.min.markets.repo.NTileStatRepository;
 import five.min.markets.repo.ProbabilityMassContainerRepository;
 import five.min.markets.repo.StringProbabilityMassRepository;
@@ -27,8 +28,8 @@ public class ApplicationConfigurationRegression100 {
 	}
 
 	@Bean
-	RegressionFeature regressionSlope100(MarketDataFeatureRepository marketDataFeatureRepository) {
-		return new RegressionFeature(FeatureType.REGRESSION_SLOPE_100, marketDataFeatureRepository);
+	RegressionFeature regressionSlope100(MarketDataFeatureRepository marketDataFeatureRepository, MarketDataRepository marketDataRepository) {
+		return new RegressionFeature(FeatureType.REGRESSION_SLOPE_100, marketDataFeatureRepository, marketDataRepository);
 	}
 	
 	@Bean

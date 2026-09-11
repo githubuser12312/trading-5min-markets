@@ -2,13 +2,15 @@ package five.min.markets.pmf;
 
 import java.util.List;
 
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import five.min.markets.entity.Market;
 import five.min.markets.entity.MarketData;
 import five.min.markets.repo.MarketRepository;
 import lombok.extern.slf4j.Slf4j;
-
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 @Component
 @Slf4j
 public class CalculateFeatureProbability {

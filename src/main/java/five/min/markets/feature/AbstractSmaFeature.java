@@ -1,9 +1,14 @@
 package five.min.markets.feature;
 
+import java.util.List;
+
+import org.springframework.data.domain.PageRequest;
+
 import five.min.markets.entity.FeatureType;
 import five.min.markets.entity.MarketData;
 import five.min.markets.entity.MarketDataFeature;
 import five.min.markets.repo.MarketDataFeatureRepository;
+import five.min.markets.repo.MarketDataRepository;
 import lombok.Getter;
 
 @Getter
@@ -12,6 +17,8 @@ public  abstract class AbstractSmaFeature extends AbstractBufferedFeature  imple
 	private double sum = 0;
 	private Double average = null;
 	private FeatureType featureType;
+	private MarketDataRepository marketDataRepository;
+	private boolean initialised = false;
 	
 	public AbstractSmaFeature(FeatureType featureType,
 			MarketDataFeatureRepository marketDataFeatureRepository) {
@@ -22,6 +29,7 @@ public  abstract class AbstractSmaFeature extends AbstractBufferedFeature  imple
 	@Override
 	public MarketDataFeature getFeature(MarketData marketData) {
 		MarketDataFeature marketDataFeature = null;
+		if(!initialised) initialise(marketData);
 		if(average != null) {
 			marketDataFeature = getFeatureFromDb(marketData);
 			mapFeatureValue(marketDataFeature, marketData);
@@ -59,5 +67,17 @@ public  abstract class AbstractSmaFeature extends AbstractBufferedFeature  imple
 		sum = 0;
 		average = null;
 	}
+
+	@Override
+	public boolean initialise(MarketData marketData) {
+		if(!initialised) return true;
+		List<MarketData> barsBefore = marketDataRepository.findBarsBefore(marketData, PageRequest.of(0, buffer.maxSize()));
+		barsBefore = barsBefore.reversed();
+		barsBefore.forEach(b -> update(b));
+		initialised = true;
+		return barsBefore.size() == buffer.maxSize();
+	}
+	
+	
 	
 }

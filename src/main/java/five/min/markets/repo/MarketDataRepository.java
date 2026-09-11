@@ -1,6 +1,7 @@
 package five.min.markets.repo;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.data.domain.Page;
@@ -28,4 +29,12 @@ public interface MarketDataRepository extends JpaRepository<MarketData, Integer>
 	
 	@Query("SELECT MAX(d.start) FROM MarketData d JOIN d.market m ON m = :market")
 	Instant findLatestMarketDataForMarket(Market market);
+	
+	@Query("""
+			SELECT m FROM MarketData m
+			WHERE m.market = :#{#marketData.market}
+			AND m.start < :#{#marketData.start}
+			ORDER BY m.start DESC
+			""")
+	List<MarketData> findBarsBefore(MarketData marketData, Pageable pageable);
 }
