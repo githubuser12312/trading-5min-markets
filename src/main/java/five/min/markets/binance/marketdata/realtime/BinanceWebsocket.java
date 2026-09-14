@@ -58,7 +58,7 @@ public class BinanceWebsocket {
 		while(true) {
 			KlineResponse response = messageQueue.take();
 			listeners.forEach(l -> l.accept(response));
-			TimeUnit.MILLISECONDS.sleep(100);
+			TimeUnit.MILLISECONDS.sleep(1);
 		}
 	}
 	

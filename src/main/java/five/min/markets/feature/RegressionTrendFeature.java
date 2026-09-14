@@ -13,6 +13,7 @@ import five.min.markets.entity.MarketDataFeature;
 import five.min.markets.entity.NTileStat;
 import five.min.markets.entity.StatType;
 import five.min.markets.entity.TrendClassification;
+import five.min.markets.pool.ObjectPoolFactory;
 import five.min.markets.repo.MarketDataFeatureRepository;
 import five.min.markets.repo.NTileStatRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -32,8 +33,9 @@ public class RegressionTrendFeature extends AbstractFeature {
 			NTileStatRepository nTileStatRepository,
 			StatType sourceStat,
 			FeatureType featureType,
-			FeatureType baseFeatureType) {
-		super(marketDataFeatureRepository);
+			FeatureType baseFeatureType,
+			ObjectPoolFactory objectPoolFactory) {
+		super(marketDataFeatureRepository, objectPoolFactory);
 		this.nTileStatRepository = nTileStatRepository;
 		this.featureType = featureType;
 		this.statType = sourceStat;

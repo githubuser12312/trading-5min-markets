@@ -1,0 +1,13 @@
+package five.min.markets.chronicle.config;
+
+public enum Queues {
+
+	MARKET_DATA,
+	ORDER_BOOK_UPDATE,
+	FEATURES_UPDATE,
+	PROBABILITY_UPDATE,
+	STRATEGY_OUT,
+	ACCOUNT_UPDATE,
+	TRADE_GATEWAY_IN,
+	TRADE_GATEWAY_OUT;
+}

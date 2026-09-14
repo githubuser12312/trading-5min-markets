@@ -28,11 +28,11 @@ public class BinanceCsvLineProcessor {
 			time = time / 1000; // format is microseconds
 		}
 		Instant instant = Instant.ofEpochMilli(time);
-		BigDecimal open = new BigDecimal(line[1]);
-		BigDecimal high = new BigDecimal(line[2]);
-		BigDecimal low = new BigDecimal(line[3]);
-		BigDecimal close = new BigDecimal(line[4]);
-		BigDecimal volume = new BigDecimal(line[5]);
+		double open = Double.valueOf(line[1]);
+		double high = Double.valueOf(line[2]);
+		double low = Double.valueOf(line[3]);
+		double close = Double.valueOf(line[4]);
+		double volume = Double.valueOf(line[5]);
 		MarketData data = marketDataRepository.findByMarketEqualsAndStartEquals(market, instant);
 		if(data == null) {
 			data = new MarketData();

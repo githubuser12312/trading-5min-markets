@@ -20,7 +20,6 @@ public class AnalysisUpdater {
 	private UpdateMarketDataFeatures updateMarketDataFeatures;
 	private CalculateFeatureProbability calculateFeatureProbability;
 	private CalculateStats calculateStats;
-
 	private final int maxOrder = getMaxOrder();
 	
 	public AnalysisUpdater(UpdateMarketDataFeatures updateMarketDataFeatures,

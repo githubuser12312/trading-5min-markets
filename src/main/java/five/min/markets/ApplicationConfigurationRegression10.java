@@ -10,6 +10,7 @@ import five.min.markets.feature.RegressionFeature;
 import five.min.markets.feature.RegressionTrendFeature;
 import five.min.markets.pmf.ProbabilityCalculator;
 import five.min.markets.pmf.StringProbabilityCalculator;
+import five.min.markets.pool.ObjectPoolFactory;
 import five.min.markets.repo.MarketDataFeatureRepository;
 import five.min.markets.repo.MarketDataRepository;
 import five.min.markets.repo.NTileStatRepository;
@@ -28,8 +29,9 @@ public class ApplicationConfigurationRegression10 {
 	}
 
 	@Bean
-	RegressionFeature regressionSlope10(MarketDataFeatureRepository marketDataFeatureRepository, MarketDataRepository marketDataRepository) {
-		return new RegressionFeature(FeatureType.REGRESSION_SLOPE_10, marketDataFeatureRepository,marketDataRepository);
+	RegressionFeature regressionSlope10(MarketDataFeatureRepository marketDataFeatureRepository, MarketDataRepository marketDataRepository,
+			ObjectPoolFactory objectPoolFactory) {
+		return new RegressionFeature(FeatureType.REGRESSION_SLOPE_10, marketDataFeatureRepository,marketDataRepository, objectPoolFactory);
 	}
 	
 	@Bean
@@ -48,22 +50,24 @@ public class ApplicationConfigurationRegression10 {
 	
 	@Bean
 	FeatureMapper upTrendRegression10Feature(MarketDataFeatureRepository marketDataFeatureRepository,
-			NTileStatRepository nTileStatRepository) {
+			NTileStatRepository nTileStatRepository,
+			ObjectPoolFactory objectPoolFactory) {
 		return new RegressionTrendFeature(marketDataFeatureRepository, 
 				nTileStatRepository, 
 				StatType.SLOPE_UP_QUARTILE_REG10,
 				FeatureType.REGRESSION_10_TREND_UP, 
-				FeatureType.REGRESSION_SLOPE_10);
+				FeatureType.REGRESSION_SLOPE_10, objectPoolFactory);
 	}
 	
 	@Bean
 	FeatureMapper downTrendRegression10Feature(MarketDataFeatureRepository marketDataFeatureRepository,
-			NTileStatRepository nTileStatRepository) {
+			NTileStatRepository nTileStatRepository,
+			ObjectPoolFactory objectPoolFactory) {
 		return new RegressionTrendFeature(marketDataFeatureRepository, 
 				nTileStatRepository, 
 				StatType.SLOPE_DOWN_QUARTILE_REG10,
 				FeatureType.REGRESSION_10_TREND_DOWN, 
-				FeatureType.REGRESSION_SLOPE_10);
+				FeatureType.REGRESSION_SLOPE_10, objectPoolFactory);
 	}
 	
 	@Bean

@@ -13,4 +13,6 @@ public interface FeatureMapper {
 	void updateFeature(MarketData marketData);
 	
 	FeatureType getFeatureType();
+	
+	void setFastMode(boolean fastMode);
 }

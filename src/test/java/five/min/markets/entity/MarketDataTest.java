@@ -46,11 +46,11 @@ public class MarketDataTest {
 	private MarketData createMarketData(Market market, Instant start) {
 		MarketData marketData = new MarketData();
 		marketData.setMarket(market);
-		marketData.setClose(BigDecimal.TWO);
-		marketData.setOpen(BigDecimal.ONE);
-		marketData.setHigh(BigDecimal.ONE);
-		marketData.setLow(BigDecimal.ONE);
-		marketData.setVolume(BigDecimal.ONE);
+		marketData.setClose(1.0);
+		marketData.setOpen(1.0);
+		marketData.setHigh(1.0);
+		marketData.setLow(1.0);
+		marketData.setVolume(1.0);
 		marketData.setStart(start);
 		marketData.setDirection();
 		return marketDataRepository.save(marketData);

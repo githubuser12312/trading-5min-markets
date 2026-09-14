@@ -7,12 +7,14 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import five.min.markets.entity.MarketData;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 @Component
 @Slf4j
 public class UpdateMarketDataFeatures {
 
+	@Getter
 	private List<FeatureMapper> featureMappers;
 	public UpdateMarketDataFeatures(
 			List<FeatureMapper> featureMappers) {

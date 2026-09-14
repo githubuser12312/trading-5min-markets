@@ -53,25 +53,25 @@ public class MarketData {
 	@EqualsAndHashCode.Include
 	private Instant start;
 	@Column(name = "open", columnDefinition = "decimal(36, 18)", nullable = false)
-	private BigDecimal open;
+	private double open;
 	@Column(name = "high", columnDefinition = "decimal(36, 18)", nullable = false)
-	private BigDecimal high;
+	private double high;
 	@Column(name = "low", columnDefinition = "decimal(36, 18)", nullable = false)
-	private BigDecimal low;
+	private double low;
 	@Column(name = "close", columnDefinition = "decimal(36, 18)", nullable = false)
-	private BigDecimal close;
+	private double close;
 	@Column(name = "volume", columnDefinition = "decimal(36, 18)", nullable = false)
-	private BigDecimal volume;
+	private double volume;
 	@Column(name = "up", columnDefinition = "boolean", nullable = false)
 	private Boolean up;
 	@Column(name = "percent", columnDefinition = "decimal(36,18)")
-	private BigDecimal percent;
+	private double percent;
 	@OneToMany(mappedBy = "marketData")
 	private Set<MarketDataFeature> features;
 	
 	
 	public void setDirection() {
-		if(open.compareTo(close) >= 0) {
+		if(open <= close) {
 			up = Boolean.FALSE;
 		}
 		else {
@@ -80,6 +80,6 @@ public class MarketData {
 	}
 	
 	public void setPercent() {
-		this.percent = close.subtract(open).divide(open, RoundingMode.HALF_DOWN).setScale(6, RoundingMode.HALF_DOWN);
+		this.percent = (close - open) / open;
 	}
 }

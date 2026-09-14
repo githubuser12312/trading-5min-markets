@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import five.min.markets.entity.FeatureType;
 import five.min.markets.entity.MarketData;
 import five.min.markets.entity.MarketDataFeature;
+import five.min.markets.pool.ObjectPoolFactory;
 import five.min.markets.repo.MarketDataFeatureRepository;
 import five.min.markets.repo.MarketDataRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -22,8 +23,9 @@ public class LastBarFeatureMapper extends AbstractFeature {
 	private MarketDataRepository marketDataRepository;
 	
 	public LastBarFeatureMapper(MarketDataFeatureRepository marketDataFeatureRepository,
-			MarketDataRepository marketDataRepository) {
-		super(marketDataFeatureRepository);
+			MarketDataRepository marketDataRepository,
+			ObjectPoolFactory objectPoolFactory) {
+		super(marketDataFeatureRepository, objectPoolFactory);
 		this.marketDataRepository = marketDataRepository;
 	}
 

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import five.min.markets.entity.FeatureType;
 import five.min.markets.entity.MarketData;
 import five.min.markets.entity.MarketDataFeature;
+import five.min.markets.pool.ObjectPoolFactory;
 import five.min.markets.repo.MarketDataFeatureRepository;
 import five.min.markets.repo.MarketDataRepository;
 
@@ -25,8 +26,9 @@ public class RegressionFeature extends AbstractFeature {
 	
 	public RegressionFeature(FeatureType featureType, 
 			MarketDataFeatureRepository marketDataFeatureRepository,
-			MarketDataRepository marketDataRepository) {
-		super(marketDataFeatureRepository);
+			MarketDataRepository marketDataRepository,
+			ObjectPoolFactory objectPoolFactory) {
+		super(marketDataFeatureRepository, objectPoolFactory);
 		this.length = (int) featureType.config.get("length");
 		this.featureType = featureType;
 		data = new ArrayList<>(length);
@@ -39,7 +41,7 @@ public class RegressionFeature extends AbstractFeature {
 			initialise(marketData);
 		}
 		if(data.size() < length) {
-			data.add(marketData.getClose().doubleValue());
+			data.add(marketData.getClose());
 			return null;
 		}
 		SimpleRegression simpleRegression = new SimpleRegression();
@@ -55,7 +57,7 @@ public class RegressionFeature extends AbstractFeature {
 		MarketDataFeature markteDataFeature = getFeatureFromDb(marketData);
 		markteDataFeature.setDoubleValue(slope);
 		data.remove(0);
-		data.add(marketData.getClose().doubleValue());
+		data.add(marketData.getClose());
 		return markteDataFeature;
 	}
 	
@@ -76,7 +78,7 @@ public class RegressionFeature extends AbstractFeature {
 	public boolean initialise(MarketData marketData) {
 		List<MarketData> pastBars = marketDataRepository.findBarsBefore(marketData, PageRequest.of(0, length));
 		pastBars = pastBars.reversed();
-		pastBars.forEach(b -> data.add(b.getClose().doubleValue()));
+		pastBars.forEach(b -> data.add(b.getClose()));
 		return pastBars.size() == length;
 	}
 

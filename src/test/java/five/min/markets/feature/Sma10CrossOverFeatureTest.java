@@ -27,7 +27,7 @@ public class Sma10CrossOverFeatureTest {
 		// TODO Auto-generated constructor stub
 	}
 
-	private MarketData createMarketDataFeature(BigDecimal close) {
+	private MarketData createMarketDataFeature(double close) {
 		MarketData marketData = new MarketData();
 		marketData.setClose(close);
 		return marketData;
@@ -36,7 +36,7 @@ public class Sma10CrossOverFeatureTest {
 	private List<MarketData> createMarketDataList(int length) {
 		List<MarketData> datas = new ArrayList<>();
 		for(int i = 0; i < length; i++) {
-			datas.add(createMarketDataFeature(BigDecimal.TEN));
+			datas.add(createMarketDataFeature(10.0));
 		}
 		return datas;
 	}
@@ -47,9 +47,9 @@ public class Sma10CrossOverFeatureTest {
 		List<MarketData> marketDatas = createMarketDataList(11);
 		marketDatas.forEach(m -> sma10CrossOverFeature.updateFeature(m));
 		MarketDataFeature feature = new MarketDataFeature();
-		MarketData marketData = createMarketDataFeature(new BigDecimal(11));
+		MarketData marketData = createMarketDataFeature(11.0);
 		sma10CrossOverFeature.updateFeature(marketData);
-		marketData = createMarketDataFeature(new BigDecimal(10));
+		marketData = createMarketDataFeature(10.0);
 		sma10CrossOverFeature.mapFeatureValue(feature, marketData);
 		assertTrue(feature.getBooleanValue());
 	}
@@ -60,9 +60,9 @@ public class Sma10CrossOverFeatureTest {
 		List<MarketData> marketDatas = createMarketDataList(11);
 		marketDatas.forEach(m -> sma10CrossOverFeature.updateFeature(m));
 		MarketDataFeature feature = new MarketDataFeature();
-		MarketData marketData = createMarketDataFeature(new BigDecimal(10));
+		MarketData marketData = createMarketDataFeature(10.0);
 		sma10CrossOverFeature.updateFeature(marketData);
-		marketData = createMarketDataFeature(new BigDecimal(10));
+		marketData = createMarketDataFeature(10.0);
 		sma10CrossOverFeature.mapFeatureValue(feature, marketData);
 		assertFalse(feature.getBooleanValue());
 		
@@ -74,9 +74,9 @@ public class Sma10CrossOverFeatureTest {
 		List<MarketData> marketDatas = createMarketDataList(11);
 		marketDatas.forEach(m -> sma10CrossOverFeature.updateFeature(m));
 		MarketDataFeature feature = new MarketDataFeature();
-		MarketData marketData = createMarketDataFeature(new BigDecimal(9));
+		MarketData marketData = createMarketDataFeature(9.0);
 		sma10CrossOverFeature.updateFeature(marketData);
-		marketData = createMarketDataFeature(new BigDecimal(10));
+		marketData = createMarketDataFeature(10.0);
 		sma10CrossOverFeature.mapFeatureValue(feature, marketData);
 		assertFalse(feature.getBooleanValue());
 	}

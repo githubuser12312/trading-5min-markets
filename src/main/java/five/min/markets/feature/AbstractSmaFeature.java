@@ -7,12 +7,13 @@ import org.springframework.data.domain.PageRequest;
 import five.min.markets.entity.FeatureType;
 import five.min.markets.entity.MarketData;
 import five.min.markets.entity.MarketDataFeature;
+import five.min.markets.pool.ObjectPoolFactory;
 import five.min.markets.repo.MarketDataFeatureRepository;
 import five.min.markets.repo.MarketDataRepository;
 import lombok.Getter;
 
 @Getter
-public  abstract class AbstractSmaFeature extends AbstractBufferedFeature  implements FeatureMapper{
+public  abstract class AbstractSmaFeature extends AbstractBufferedFeature  implements FeatureMapper {
 
 	private double sum = 0;
 	private Double average = null;
@@ -21,8 +22,9 @@ public  abstract class AbstractSmaFeature extends AbstractBufferedFeature  imple
 	private boolean initialised = false;
 	
 	public AbstractSmaFeature(FeatureType featureType,
-			MarketDataFeatureRepository marketDataFeatureRepository) {
-		super((int) featureType.config.get("length"), marketDataFeatureRepository);
+			MarketDataFeatureRepository marketDataFeatureRepository,
+			ObjectPoolFactory objectPoolFactory) {
+		super((int) featureType.config.get("length"), marketDataFeatureRepository, objectPoolFactory);
 		this.featureType = featureType;
 	}
 	
@@ -33,7 +35,6 @@ public  abstract class AbstractSmaFeature extends AbstractBufferedFeature  imple
 		if(average != null) {
 			marketDataFeature = getFeatureFromDb(marketData);
 			mapFeatureValue(marketDataFeature, marketData);
-			marketDataFeatureRepository.save(marketDataFeature);
 		}
 		update(marketData);
 		return marketDataFeature;
@@ -42,9 +43,9 @@ public  abstract class AbstractSmaFeature extends AbstractBufferedFeature  imple
 	protected void update(MarketData marketData) {
 		if(isFull()) {
 			MarketData removed = (MarketData) buffer.remove();
-			sum -= removed.getClose().doubleValue();
+			sum -= removed.getClose();
 		}
-		sum += marketData.getClose().doubleValue();
+		sum += marketData.getClose();
 		buffer.add(marketData);
 		if(isFull()) {
 			average = sum / buffer.size();

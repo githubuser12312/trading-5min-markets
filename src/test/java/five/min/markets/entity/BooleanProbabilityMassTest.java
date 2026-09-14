@@ -41,12 +41,12 @@ public class BooleanProbabilityMassTest {
 		market.setPeriod(Period.FIVE_MINUTES);
 		MarketData marketData = new MarketData();
 		marketData.setStart(Instant.now());
-		marketData.setHigh(BigDecimal.ONE);
-		marketData.setLow(BigDecimal.ONE);
-		marketData.setOpen(BigDecimal.ONE);
-		marketData.setClose(BigDecimal.ONE);
+		marketData.setHigh(1.0);
+		marketData.setLow(1.0);
+		marketData.setOpen(1.0);
+		marketData.setClose(1.0);
 		marketData.setUp(false);
-		marketData.setVolume(BigDecimal.ONE);
+		marketData.setVolume(1.0);
 		market = marketRepository.save(market);
 		marketData.setMarket(market);
 		return marketDataRepository.save(marketData);

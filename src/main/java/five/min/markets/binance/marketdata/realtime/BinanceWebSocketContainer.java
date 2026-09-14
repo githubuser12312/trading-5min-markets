@@ -34,7 +34,7 @@ public class BinanceWebSocketContainer {
 					.filter(l -> m.getPeriod() == l.getPeriod())
 					.toList();
 			listeners.forEach(l -> mSocket.addListener(l));
-			mSocket.addListener(defaultListener);
+			//mSocket.addListener(defaultListener);
 			sockets.add(mSocket);
 		}
 	}
