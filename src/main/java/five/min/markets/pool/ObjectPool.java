@@ -3,7 +3,7 @@ package five.min.markets.pool;
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class ObjectPool<T> {
+public class ObjectPool<T extends Poolable> {
 
 	private ConcurrentLinkedQueue<T> pool;
 	private Class<T> type;
@@ -17,10 +17,11 @@ public class ObjectPool<T> {
 	}
 	
 	public T borrow() {
-		return pool.remove();
+		return pool.poll();
 	}
 	
 	public void give(T instance) {
+		instance.reset();
 		pool.offer(instance);
 	}
 	

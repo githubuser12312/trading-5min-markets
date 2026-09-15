@@ -19,7 +19,7 @@ import five.min.markets.entity.Source;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class BinanceWebsocket {
+public class BinanceWebsocket implements Runnable {
 
 	private SpotWebSocketStreams api;
 	private StreamBlockingQueueWrapper<KlineResponse> messageQueue;
@@ -39,8 +39,7 @@ public class BinanceWebsocket {
 		this.klineRequest = klineRequest;
 	}
 	
-	@Async
-	public void stream() {
+	public void run() {
 		do {
 			try {
 				log.info("Connect to spot market stream for {}", market);

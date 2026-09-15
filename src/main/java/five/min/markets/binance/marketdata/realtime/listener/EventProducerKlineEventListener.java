@@ -7,28 +7,30 @@ import org.springframework.stereotype.Component;
 import com.binance.connector.client.spot.websocket.stream.model.KlineResponse;
 
 import five.min.markets.binance.marketdata.realtime.KlineEventListener;
-import five.min.markets.chronicle.config.QueueFactory;
+import five.min.markets.chronicle.QueueFactory;
 import five.min.markets.chronicle.config.Queues;
 import five.min.markets.entity.MarketData;
 import five.min.markets.entity.Period;
 import five.min.markets.entity.Source;
 import five.min.markets.pool.ObjectPoolFactory;
 import lombok.extern.slf4j.Slf4j;
+import net.openhft.chronicle.queue.ExcerptAppender;
 
 @Component
 @Slf4j
 public class EventProducerKlineEventListener implements KlineEventListener {
 
 	private QueueFactory queueFactory;
+	private ExcerptAppender excerptAppender;
 	public EventProducerKlineEventListener(QueueFactory queueFactory) {
 		this.queueFactory = queueFactory;
+		this.excerptAppender = queueFactory.createAppender(Queues.MARKET_DATA);
 	}
 	
 	@Override
 	public void accept(KlineResponse event) {
-		log.info("Enter {}", getClass().getSimpleName());
-		queueFactory.write(Queues.MARKET_DATA, appender -> {
-			appender.writeDocument((w) -> {
+		log.debug("Enter {}", getClass().getSimpleName());
+		this.excerptAppender.writeDocument((w) -> {
 				w.write("m").writeString(getMarketCode())
 					.write("p").writeInt(getPeriod().ordinal())
 					.write("s").writeInt(getSource().ordinal())
@@ -41,8 +43,7 @@ public class EventProducerKlineEventListener implements KlineEventListener {
 					.write("cs").writeLong(event.getkLowerCase().gettLowerCase())
 					.write("cc").writeLong(event.getkLowerCase().getT());
 			});
-		});
-		log.info("Exit {}", getClass().getSimpleName());
+		log.debug("Exit {}", getClass().getSimpleName());
 	}
 	
 	@Override

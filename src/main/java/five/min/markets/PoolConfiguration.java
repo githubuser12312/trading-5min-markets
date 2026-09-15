@@ -15,17 +15,12 @@ import five.min.markets.pool.ObjectPool;
 public class PoolConfiguration {
 
 	@Bean
-	ObjectPool<MarketDataFeature> marketDataFeatureObjectPool() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException {
-		return new ObjectPool<>(MarketDataFeature.class, 100);
-	}
-	
-	@Bean
 	ObjectPool<RuntimeMarketData> marketDataObjectPool() throws Exception {
-		return new ObjectPool<>(RuntimeMarketData.class, 100);
+		return new ObjectPool<>(RuntimeMarketData.class, 1000);
 	}
 	
 	@Bean
 	ObjectPool<Market> marketObjectPool() throws Exception {
-		return new ObjectPool<>(Market.class, 100);
+		return new ObjectPool<>(Market.class, 1000);
 	}
 }

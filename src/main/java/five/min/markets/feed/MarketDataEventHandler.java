@@ -1,4 +1,4 @@
-package five.min.markets.events.model;
+package five.min.markets.feed;
 
 import net.openhft.chronicle.core.threads.EventHandler;
 

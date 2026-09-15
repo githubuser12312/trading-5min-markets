@@ -1,5 +1,6 @@
 package five.min.markets.entity;
 
+import five.min.markets.pool.Poolable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

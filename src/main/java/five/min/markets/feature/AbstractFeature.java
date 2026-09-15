@@ -22,9 +22,6 @@ public abstract class AbstractFeature implements FeatureMapper {
 	}
 	
 	protected MarketDataFeature getFeatureFromDb(MarketData marketData) {
-		if(isFastMode) {
-			return objectPoolFactory.borrow(MarketDataFeature.class);
-		}
 		MarketDataFeature currentFeature = marketDataFeatureRepository.findByMarketDataEqualsAndFeatureTypeEquals(
 				marketData, getFeatureType());
 		if(currentFeature == null) {

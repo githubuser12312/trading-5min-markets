@@ -31,6 +31,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "market_data", uniqueConstraints = {
@@ -38,8 +39,9 @@ import lombok.Setter;
 })
 @Getter
 @Setter
+@ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class MarketData {
+public class MarketData implements IMarketData {
 
 	@Column(name = "id", unique = true)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -81,5 +83,37 @@ public class MarketData {
 	
 	public void setPercent() {
 		this.percent = (close - open) / open;
+	}
+	
+	public void reset() {
+		this.id = null;
+		this.market = null;
+		this.start = null;
+		this.open = 0.0;
+		this.high = 0.0;
+		this.low = 0.0;
+		this.close = 0.0;
+		this.volume = 0.0;
+		this.up = null;
+		this.percent = 0.0;
+		this.features = null;
+	}
+
+	@Override
+	public String getCode() {
+		if(market == null) return null;
+		return market.getCode();
+	}
+
+	@Override
+	public Period getPeriod() {
+		if(market == null) return null;
+		return market.getPeriod();
+	}
+
+	@Override
+	public Source getSource() {
+		if(market == null) return null;
+		return market.getSource();
 	}
 }

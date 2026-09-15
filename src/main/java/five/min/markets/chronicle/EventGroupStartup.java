@@ -1,4 +1,4 @@
-package five.min.markets.chronicle.config;
+package five.min.markets.chronicle;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
-import five.min.markets.events.model.MarketDataEventHandler;
+import five.min.markets.feed.MarketDataEventHandler;
 import lombok.extern.slf4j.Slf4j;
 import net.openhft.chronicle.threads.EventGroup;
 
@@ -16,6 +16,7 @@ public class EventGroupStartup implements ApplicationListener<ApplicationReadyEv
 	
 	private List<MarketDataEventHandler> marketDataEventHandlers;
 	private boolean initialised = false;
+	
 	public EventGroupStartup(List<MarketDataEventHandler> marketDataEventHandlers) {
 		this.marketDataEventHandlers = marketDataEventHandlers;
 	}

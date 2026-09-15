@@ -18,12 +18,12 @@ public class ObjectPoolFactory {
 		}
 	}
 	
-	public <T> T borrow(Class<T> type) {
+	public <T extends Poolable> T borrow(Class<T> type) {
 		if(!typePoolMap.containsKey(type)) throw new RuntimeException("Unpooled type " + type.getCanonicalName());
 		return (T) typePoolMap.get(type).borrow();
 	}
 	
-	public <T> void give(T object) {
+	public <T extends Poolable> void give(T object) {
 		if(!typePoolMap.containsKey(object.getClass())) throw new RuntimeException("Unpooled type " + object.getClass().getCanonicalName());
 		((ObjectPool<T>)typePoolMap.get(object.getClass())).give(object);
 	}

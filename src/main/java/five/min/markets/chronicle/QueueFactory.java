@@ -1,4 +1,4 @@
-package five.min.markets.chronicle.config;
+package five.min.markets.chronicle;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -7,6 +7,9 @@ import java.util.function.Function;
 
 import org.springframework.stereotype.Component;
 
+import five.min.markets.chronicle.config.QueueConfig;
+import five.min.markets.chronicle.config.QueueConfigs;
+import five.min.markets.chronicle.config.Queues;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import net.openhft.chronicle.queue.ChronicleQueue;
@@ -33,14 +36,18 @@ public class QueueFactory {
 		}
 	}
 	
+	public ExcerptAppender createAppender(Queues queue) {
+		return getQueue(queue).createAppender();
+	}
+	
 	public void write(Queues queue, Consumer<ExcerptAppender> writer) {
 		try(ExcerptAppender appender = getQueue(queue).createAppender()) {
 			writer.accept(appender);
 		}
 	}
 	
-	public <T> T read(Queues queue, Function<ExcerptTailer, T> action) {
-		try(ExcerptTailer trailer = getQueue(queue).createTailer()) {
+	public <T> T read(Queues queue, String trailerName, Function<ExcerptTailer, T> action) {
+		try(ExcerptTailer trailer = getQueue(queue).createTailer(trailerName)) {
 			return action.apply(trailer);
 		}
 	}

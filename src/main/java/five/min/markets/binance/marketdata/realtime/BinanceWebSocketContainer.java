@@ -2,6 +2,9 @@ package five.min.markets.binance.marketdata.realtime;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -22,6 +25,8 @@ public class BinanceWebSocketContainer {
 
 	private List<BinanceWebsocket> sockets = new ArrayList<>();
 	private KlineEventListener defaultListener = new LoggingKlineListener();
+	private final ExecutorService pool;
+	
 	public BinanceWebSocketContainer(
 			MarketRepository marketRepository, 
 			List<KlineEventListener> eventListeners) {
@@ -37,11 +42,14 @@ public class BinanceWebSocketContainer {
 			//mSocket.addListener(defaultListener);
 			sockets.add(mSocket);
 		}
+		pool = Executors.newFixedThreadPool(sockets.size());
 	}
 	
 	@PostConstruct
 	public void startListening() {
-		sockets.forEach(s -> s.stream());
+		sockets.forEach(s -> {
+			pool.submit(s);
+		});
 	}
 	
 	

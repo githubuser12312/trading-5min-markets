@@ -13,6 +13,7 @@ import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.generator.EventType;
 
+import five.min.markets.pool.Poolable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -39,7 +40,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Market {
+public class Market implements Poolable {
 
 	@Column(name = "id", unique = true)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -97,4 +98,20 @@ public class Market {
 		return LocalDateTime.ofInstant(marketData.getStart(), ZoneId.systemDefault())
 				.minus(dataAggregationLookbackPeriod).toInstant(ZoneOffset.UTC);
 	}
+
+	@Override
+	public void reset() {
+		this.id = null;
+		this.code= null;
+		this.source = null;
+		this.created = null;
+		this.updated = null;
+		this.period = null;
+		this.marketData = null;
+		this.dataAggregationPeriod = null;
+		this.dataAggregationLookbackPeriod = null;
+		
+	}
+	
+	
 }
