@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import five.min.markets.entity.IMarketData;
 import five.min.markets.entity.Market;
 import five.min.markets.entity.MarketData;
 import five.min.markets.entity.NTileStat;
@@ -25,11 +26,13 @@ public interface NTileStatRepository extends JpaRepository<NTileStat, Integer> {
 	
 	@Query("""
 			SELECT n FROM NTileStat n 
-			WHERE n.market.market.id = :#{#market.market.id}
-			AND n.market.start < :#{#market.start} 
+			WHERE n.market.market.code = :#{#market.getCode()}
+			AND n.market.market.period = :#{#market.getPeriod()}
+			AND n.market.market.source = :#{#market.getSource()}
+			AND n.market.start < :#{#market.getStart()} 
 			AND n.statType = :statType
 			ORDER BY n.market.start DESC, n.tile ASC""")
-	List<NTileStat> findByMarketAndStatType(MarketData market, StatType statType, Pageable page);
+	List<NTileStat> findByMarketAndStatType(IMarketData market, StatType statType, Pageable page);
 	
 	@Query("""
 			SELECT MAX(d.start)

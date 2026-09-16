@@ -30,6 +30,7 @@ public class QueueFactory {
 	}
 	
 	private void createQueusFromConfig() {
+		if(queueConfigs.getConfigs() == null) return;
 		for(Queues queueType : queueConfigs.getConfigs().keySet()) {
 			QueueConfig config = queueConfigs.getConfigs().get(queueType);
 			queues.put(queueType, SingleChronicleQueueBuilder.single(config.getQueuePath()).rollCycle(config.getRollCycle()).build());

@@ -13,6 +13,7 @@ import five.min.markets.pool.ObjectPoolFactory;
 import lombok.extern.slf4j.Slf4j;
 import net.openhft.chronicle.core.io.InvalidMarshallableException;
 import net.openhft.chronicle.core.threads.InvalidEventHandlerException;
+import net.openhft.chronicle.queue.ExcerptAppender;
 
 @Component
 @Slf4j
@@ -21,11 +22,13 @@ public class MarketDataReader implements MarketDataEventHandler {
 	private QueueFactory queueFactory;
 	private ObjectPoolFactory objectPoolFactory;
 	private String trailerName = "MarketDataReader-Trailer";
+	private ExcerptAppender featureQueueAppender;
 	
 	public MarketDataReader(QueueFactory queueFactory,
 			ObjectPoolFactory objectPoolFactory) {
 		this.queueFactory = queueFactory;
 		this.objectPoolFactory = objectPoolFactory;
+		this.featureQueueAppender = queueFactory.createAppender(Queues.FEATURES_UPDATE);
 	}
 
 	@Override
@@ -47,7 +50,6 @@ public class MarketDataReader implements MarketDataEventHandler {
 					market.setPeriod(Period.values()[m.read("p").readInt()]);
 					market.setSource(Source.values()[m.read("s").readInt()]);
 					marketData.setMarket(market);
-					log.debug("{}", marketData);
 				});
 				return documeRead;
 			} catch (Exception e) {

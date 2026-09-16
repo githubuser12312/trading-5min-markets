@@ -17,9 +17,11 @@ import five.min.markets.entity.projection.NTileProjection;
 
 public interface MarketDataFeatureRepository extends JpaRepository<MarketDataFeature, Long> {
 
-	MarketDataFeature findByMarketDataEqualsAndFeatureTypeEquals(MarketData data, FeatureType feature);
+	@Query("SELECT f FROM MarketDataFeature f JOIN f.marketData d ON d.id = :marketDataId WHERE f.featureType = :feature")
+	MarketDataFeature findByMarketDataEqualsAndFeatureTypeEquals(Integer marketDataId, FeatureType feature);
 	
-	List<MarketDataFeature> findByMarketDataEquals(MarketData data);
+	@Query("SELECT f FROM MarketDataFeature f JOIN f.marketData d ON d.id = :marketDataId")
+	List<MarketDataFeature> findByMarketDataEquals(Integer marketDataId);
 	
 	@Query("""
 			SELECT COUNT(*)

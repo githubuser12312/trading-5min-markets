@@ -8,7 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 
 import five.min.markets.entity.FeatureType;
-import five.min.markets.entity.MarketData;
+import five.min.markets.entity.IMarketData;
 import five.min.markets.entity.MarketDataFeature;
 import five.min.markets.entity.NTileStat;
 import five.min.markets.entity.StatType;
@@ -45,11 +45,11 @@ public class RegressionTrendFeature extends AbstractFeature {
 	}
 
 	@Override
-	public MarketDataFeature getFeature(MarketData marketData) {
+	public MarketDataFeature getFeature(IMarketData marketData) {
 		List<NTileStat> nTileStats = nTileStatRepository.findByMarketAndStatType(
 				marketData, statType, PageRequest.of(0, numTiles));
 		MarketDataFeature regressionFeature = marketDataFeatureRepository
-				.findByMarketDataEqualsAndFeatureTypeEquals(marketData, baseFeatureType);
+				.findByMarketDataEqualsAndFeatureTypeEquals(marketData.getId(), baseFeatureType);
 		if(regressionFeature == null) {
 			log.debug("No feature for {} and market data {}", baseFeatureType, marketData.getId());
 			return null;
@@ -83,7 +83,7 @@ public class RegressionTrendFeature extends AbstractFeature {
 	}
 
 	@Override
-	public void updateFeature(MarketData marketData) {
+	public void updateFeature(IMarketData marketData) {
 		MarketDataFeature trendFeature = getFeature(marketData);
 		if(trendFeature != null) {
 			marketDataFeatureRepository.save(trendFeature);
@@ -96,7 +96,7 @@ public class RegressionTrendFeature extends AbstractFeature {
 	}
 
 	@Override
-	public boolean initialise(MarketData marketData) {
+	public boolean initialise(IMarketData marketData) {
 		return true;
 	}
 

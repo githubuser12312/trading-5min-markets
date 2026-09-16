@@ -13,6 +13,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import five.min.markets.entity.FeatureType;
+import five.min.markets.entity.IMarketData;
 import five.min.markets.entity.Market;
 import five.min.markets.entity.MarketData;
 
@@ -32,9 +33,11 @@ public interface MarketDataRepository extends JpaRepository<MarketData, Integer>
 	
 	@Query("""
 			SELECT m FROM MarketData m
-			WHERE m.market = :#{#marketData.market}
-			AND m.start < :#{#marketData.start}
+			WHERE m.market.code = :#{#marketData.getCode()}
+			AND m.market.period = :#{#marketData.getPeriod()}
+			AND m.market.source = :#{#marketData.getSource()}
+			AND m.start < :#{#marketData.getStart()}
 			ORDER BY m.start DESC
 			""")
-	List<MarketData> findBarsBefore(MarketData marketData, Pageable pageable);
+	List<MarketData> findBarsBefore(IMarketData marketData, Pageable pageable);
 }

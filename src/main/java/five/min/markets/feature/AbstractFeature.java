@@ -1,6 +1,7 @@
 package five.min.markets.feature;
 
 import five.min.markets.entity.FeatureType;
+import five.min.markets.entity.IMarketData;
 import five.min.markets.entity.MarketData;
 import five.min.markets.entity.MarketDataFeature;
 import five.min.markets.pool.ObjectPoolFactory;
@@ -21,15 +22,15 @@ public abstract class AbstractFeature implements FeatureMapper {
 		this.objectPoolFactory = objectPoolFactory;
 	}
 	
-	protected MarketDataFeature getFeatureFromDb(MarketData marketData) {
+	protected MarketDataFeature getFeatureFromDb(IMarketData marketData) {
 		MarketDataFeature currentFeature = marketDataFeatureRepository.findByMarketDataEqualsAndFeatureTypeEquals(
-				marketData, getFeatureType());
+				marketData.getId(), getFeatureType());
 		if(currentFeature == null) {
 			currentFeature = new MarketDataFeature();
-			currentFeature.setFeatureType(getFeatureType());
-			currentFeature.setMarketData(marketData);
 		}
 		currentFeature.reset();
+		currentFeature.setFeatureType(getFeatureType());
+		currentFeature.setMarketData((MarketData)marketData);
 		return currentFeature;
 	}
 }

@@ -1,16 +1,16 @@
 package five.min.markets.feature;
 
 import five.min.markets.entity.FeatureType;
-import five.min.markets.entity.MarketData;
+import five.min.markets.entity.IMarketData;
 import five.min.markets.entity.MarketDataFeature;
 
 public interface FeatureMapper {
 	
-	boolean initialise(MarketData marketData);
+	boolean initialise(IMarketData marketData);
 	
-	MarketDataFeature getFeature(MarketData marketData);
+	MarketDataFeature getFeature(IMarketData marketData);
 	
-	void updateFeature(MarketData marketData);
+	void updateFeature(IMarketData marketData);
 	
 	FeatureType getFeatureType();
 	

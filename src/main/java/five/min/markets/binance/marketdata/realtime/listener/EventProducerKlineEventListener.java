@@ -25,12 +25,14 @@ public class EventProducerKlineEventListener implements KlineEventListener {
 	public EventProducerKlineEventListener(QueueFactory queueFactory) {
 		this.queueFactory = queueFactory;
 		this.excerptAppender = queueFactory.createAppender(Queues.MARKET_DATA);
+		
 	}
 	
 	@Override
 	public void accept(KlineResponse event) {
 		log.debug("Enter {}", getClass().getSimpleName());
-		this.excerptAppender.writeDocument((w) -> {
+		if(event.getkLowerCase().getxLowerCase()) {
+			this.excerptAppender.writeDocument((w) -> {
 				w.write("m").writeString(getMarketCode())
 					.write("p").writeInt(getPeriod().ordinal())
 					.write("s").writeInt(getSource().ordinal())
@@ -43,6 +45,7 @@ public class EventProducerKlineEventListener implements KlineEventListener {
 					.write("cs").writeLong(event.getkLowerCase().gettLowerCase())
 					.write("cc").writeLong(event.getkLowerCase().getT());
 			});
+		}
 		log.debug("Exit {}", getClass().getSimpleName());
 	}
 	

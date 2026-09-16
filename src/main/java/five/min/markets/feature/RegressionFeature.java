@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 import five.min.markets.entity.FeatureType;
+import five.min.markets.entity.IMarketData;
 import five.min.markets.entity.MarketData;
 import five.min.markets.entity.MarketDataFeature;
 import five.min.markets.pool.ObjectPoolFactory;
@@ -36,7 +37,7 @@ public class RegressionFeature extends AbstractFeature {
 	}
 
 	@Override
-	public MarketDataFeature getFeature(MarketData marketData) {
+	public MarketDataFeature getFeature(IMarketData marketData) {
 		if(data.isEmpty()) {
 			initialise(marketData);
 		}
@@ -62,7 +63,7 @@ public class RegressionFeature extends AbstractFeature {
 	}
 	
 	@Override
-	public void updateFeature(MarketData marketData) {
+	public void updateFeature(IMarketData marketData) {
 		MarketDataFeature markteDataFeature = getFeature(marketData);
 		if(markteDataFeature != null) {
 			marketDataFeatureRepository.save(markteDataFeature);
@@ -75,7 +76,7 @@ public class RegressionFeature extends AbstractFeature {
 	}
 
 	@Override
-	public boolean initialise(MarketData marketData) {
+	public boolean initialise(IMarketData marketData) {
 		List<MarketData> pastBars = marketDataRepository.findBarsBefore(marketData, PageRequest.of(0, length));
 		pastBars = pastBars.reversed();
 		pastBars.forEach(b -> data.add(b.getClose()));

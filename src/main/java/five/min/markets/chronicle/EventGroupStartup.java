@@ -4,12 +4,14 @@ import java.util.List;
 
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import five.min.markets.feed.MarketDataEventHandler;
 import lombok.extern.slf4j.Slf4j;
 import net.openhft.chronicle.threads.EventGroup;
 
+@Profile("marketListening")
 @Component
 @Slf4j
 public class EventGroupStartup implements ApplicationListener<ApplicationReadyEvent> {

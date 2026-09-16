@@ -73,11 +73,11 @@ public class MarketData implements IMarketData {
 	
 	
 	public void setDirection() {
-		if(open <= close) {
-			up = Boolean.FALSE;
+		if(open < close) {
+			up = Boolean.TRUE;
 		}
 		else {
-			up = Boolean.TRUE;
+			up = Boolean.FALSE;
 		}
 	}
 	

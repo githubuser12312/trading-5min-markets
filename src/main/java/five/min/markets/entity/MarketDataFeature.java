@@ -23,7 +23,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class MarketDataFeature {
+public class MarketDataFeature implements Poolable {
 
 	@Column(name = "id", unique = true)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,5 +45,7 @@ public class MarketDataFeature {
 		doubleValue = null;
 		booleanValue = null;
 		stringValue = null;
+		featureType = null;
+		marketData = null;
 	}
 }

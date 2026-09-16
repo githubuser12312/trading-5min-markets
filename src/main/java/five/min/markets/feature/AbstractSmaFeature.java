@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.PageRequest;
 
 import five.min.markets.entity.FeatureType;
+import five.min.markets.entity.IMarketData;
 import five.min.markets.entity.MarketData;
 import five.min.markets.entity.MarketDataFeature;
 import five.min.markets.pool.ObjectPoolFactory;
@@ -29,7 +30,7 @@ public  abstract class AbstractSmaFeature extends AbstractBufferedFeature  imple
 	}
 	
 	@Override
-	public MarketDataFeature getFeature(MarketData marketData) {
+	public MarketDataFeature getFeature(IMarketData marketData) {
 		MarketDataFeature marketDataFeature = null;
 		if(!initialised) initialise(marketData);
 		if(average != null) {
@@ -40,7 +41,7 @@ public  abstract class AbstractSmaFeature extends AbstractBufferedFeature  imple
 		return marketDataFeature;
 	}
 	
-	protected void update(MarketData marketData) {
+	protected void update(IMarketData marketData) {
 		if(isFull()) {
 			MarketData removed = (MarketData) buffer.remove();
 			sum -= removed.getClose();
@@ -53,14 +54,14 @@ public  abstract class AbstractSmaFeature extends AbstractBufferedFeature  imple
 	}
 
 	@Override
-	public void updateFeature(MarketData marketData) {
+	public void updateFeature(IMarketData marketData) {
 		MarketDataFeature marketDataFeature = getFeature(marketData);
 		if(marketDataFeature != null) {
 			marketDataFeatureRepository.save(marketDataFeature);
 		}
 	}
 	
-	protected abstract void mapFeatureValue(MarketDataFeature marketDataFeature, MarketData marketData);
+	protected abstract void mapFeatureValue(MarketDataFeature marketDataFeature, IMarketData marketData);
 	
 	
 	public void reset() {
@@ -70,7 +71,7 @@ public  abstract class AbstractSmaFeature extends AbstractBufferedFeature  imple
 	}
 
 	@Override
-	public boolean initialise(MarketData marketData) {
+	public boolean initialise(IMarketData marketData) {
 		if(!initialised) return true;
 		List<MarketData> barsBefore = marketDataRepository.findBarsBefore(marketData, PageRequest.of(0, buffer.maxSize()));
 		barsBefore = barsBefore.reversed();

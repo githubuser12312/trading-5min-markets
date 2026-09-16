@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 import five.min.markets.entity.FeatureType;
+import five.min.markets.entity.IMarketData;
 import five.min.markets.entity.MarketData;
 import five.min.markets.entity.MarketDataFeature;
 import five.min.markets.pool.ObjectPoolFactory;
@@ -19,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 @Scope("prototype")
 public class LastBarFeatureMapper extends AbstractFeature {
 
-	private MarketData lastBar;
+	private IMarketData lastBar;
 	private MarketDataRepository marketDataRepository;
 	
 	public LastBarFeatureMapper(MarketDataFeatureRepository marketDataFeatureRepository,
@@ -30,14 +31,13 @@ public class LastBarFeatureMapper extends AbstractFeature {
 	}
 
 	@Override
-	public MarketDataFeature getFeature(MarketData marketData) {
+	public MarketDataFeature getFeature(IMarketData marketData) {
 		if(lastBar == null && !initialise(marketData)) {
 			log.info("New dataset");
 			lastBar = marketData;
 			return null;
 		}
 		MarketDataFeature currentFeature = getFeatureFromDb(marketData);
-		currentFeature.reset();
 		if(lastBar.getUp()) {
 			currentFeature.setBooleanValue(Boolean.TRUE);
 		} else {
@@ -48,7 +48,7 @@ public class LastBarFeatureMapper extends AbstractFeature {
 	}
 
 	@Override
-	public void updateFeature(MarketData marketData) {
+	public void updateFeature(IMarketData marketData) {
 		MarketDataFeature currentFeature = getFeature(marketData);
 		if(currentFeature != null) {
 			marketDataFeatureRepository.save(currentFeature);
@@ -61,7 +61,7 @@ public class LastBarFeatureMapper extends AbstractFeature {
 	}
 
 	@Override
-	public boolean initialise(MarketData marketData) {
+	public boolean initialise(IMarketData marketData) {
 		List<MarketData> barBefore = marketDataRepository.findBarsBefore(marketData, PageRequest.of(0, 1));
 		if(barBefore == null || barBefore.isEmpty()) return false;
 		lastBar = barBefore.get(0);

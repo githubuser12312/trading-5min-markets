@@ -89,7 +89,7 @@ public class UpDownProbabilityBasedStrategy implements Strategy {
 	@Override
 	public Optional<EntrySignal> evaluate(MarketData data, SimulationContext context) {
 		BernoulliBayesModel bernoulliBayesModel = new BernoulliBayesModel(0.5);
-		List<MarketDataFeature> features = marketDataFeatureRepository.findByMarketDataEquals(data);
+		List<MarketDataFeature> features = marketDataFeatureRepository.findByMarketDataEquals(data.getId());
 		List<ProbabilityMassContainer> probabilityMassContainers = probabilityMassContainerRepository.latestProbabilityMassContainers();
 		for(ProbabilityMassContainer probabilityMassContainer : probabilityMassContainers) {
 			MarketDataFeature applicable = hasFeature(features, probabilityMassContainer);

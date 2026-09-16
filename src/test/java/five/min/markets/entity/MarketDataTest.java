@@ -46,7 +46,7 @@ public class MarketDataTest {
 	private MarketData createMarketData(Market market, Instant start) {
 		MarketData marketData = new MarketData();
 		marketData.setMarket(market);
-		marketData.setClose(1.0);
+		marketData.setClose(1.5);
 		marketData.setOpen(1.0);
 		marketData.setHigh(1.0);
 		marketData.setLow(1.0);
@@ -79,17 +79,17 @@ public class MarketDataTest {
 	@Test
 	public void testMarketDataFeature() {
 		Market market = createMarket();
-		MarketData marketData2 = createMarketData(market,createInstant(10));
-		MarketData marketData1 = createMarketData(market, createInstant(5));
+		MarketData marketData1 = createMarketData(market,createInstant(10));
+		MarketData marketData2 = createMarketData(market, createInstant(5));
 		MarketData marketData3 = createMarketData(market, createInstant(0));
-		MarketDataFeature marketDataFeature2 = createMarketDataFeature(marketData2);
 		MarketDataFeature marketDataFeature1 = createMarketDataFeature(marketData1);
+		MarketDataFeature marketDataFeature2 = createMarketDataFeature(marketData2);
 		MarketDataFeature marketDataFeature3 = createMarketDataFeature(marketData3);
 		Long countFeature = marketDataFeatureRepository.featurePredictionNumerator(marketData3,
 				FeatureType.LAST_BAR_UP, 
 				true,
 				true,
-				marketData2.getStart());
+				marketData1.getStart());
 		assertEquals(2L, countFeature);
 	}
 	

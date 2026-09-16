@@ -1,7 +1,10 @@
 package five.min.markets.entity;
 
-public interface IMarketData {
+import java.time.Instant;
 
+public interface IMarketData {
+	Integer getId();
+	Instant getStart();
 	String getCode();
 	Period getPeriod();
 	Source getSource();
