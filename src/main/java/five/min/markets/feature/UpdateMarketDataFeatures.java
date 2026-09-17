@@ -6,7 +6,9 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import five.min.markets.entity.IMarketData;
 import five.min.markets.entity.MarketData;
+import five.min.markets.entity.MarketDataFeature;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -32,4 +34,5 @@ public class UpdateMarketDataFeatures {
 			}
 		}
 	}
+	
 }

@@ -15,6 +15,7 @@ import jakarta.persistence.UniqueConstraint;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "market_data_feature", uniqueConstraints = {
@@ -23,6 +24,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString
 public class MarketDataFeature implements Poolable {
 
 	@Column(name = "id", unique = true)

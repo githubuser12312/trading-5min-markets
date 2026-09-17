@@ -24,6 +24,7 @@ public class ObjectPoolFactory {
 	}
 	
 	public <T extends Poolable> void give(T object) {
+		if(object == null) return;
 		if(!typePoolMap.containsKey(object.getClass())) throw new RuntimeException("Unpooled type " + object.getClass().getCanonicalName());
 		((ObjectPool<T>)typePoolMap.get(object.getClass())).give(object);
 	}

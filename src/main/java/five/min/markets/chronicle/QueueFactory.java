@@ -41,6 +41,10 @@ public class QueueFactory {
 		return getQueue(queue).createAppender();
 	}
 	
+	public ExcerptTailer createReader(Queues queue, String name) {
+		return getQueue(queue).createTailer(name);
+	}
+	
 	public void write(Queues queue, Consumer<ExcerptAppender> writer) {
 		try(ExcerptAppender appender = getQueue(queue).createAppender()) {
 			writer.accept(appender);

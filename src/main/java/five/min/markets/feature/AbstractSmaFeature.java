@@ -43,7 +43,7 @@ public  abstract class AbstractSmaFeature extends AbstractBufferedFeature  imple
 	
 	protected void update(IMarketData marketData) {
 		if(isFull()) {
-			MarketData removed = (MarketData) buffer.remove();
+			IMarketData removed = (IMarketData) buffer.remove();
 			sum -= removed.getClose();
 		}
 		sum += marketData.getClose();

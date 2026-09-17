@@ -14,5 +14,7 @@ public interface FeatureMapper {
 	
 	FeatureType getFeatureType();
 	
-	void setFastMode(boolean fastMode);
+	void setMappingMode(MappingMode mappingMode);
+	
+	MappingMode getMappingMode();
 }

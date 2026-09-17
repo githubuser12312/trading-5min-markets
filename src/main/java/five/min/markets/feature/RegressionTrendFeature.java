@@ -9,13 +9,17 @@ import org.springframework.data.domain.Sort.Direction;
 
 import five.min.markets.entity.FeatureType;
 import five.min.markets.entity.IMarketData;
+import five.min.markets.entity.MarketData;
 import five.min.markets.entity.MarketDataFeature;
 import five.min.markets.entity.NTileStat;
 import five.min.markets.entity.StatType;
 import five.min.markets.entity.TrendClassification;
+import five.min.markets.events.model.RuntimeMarketData;
 import five.min.markets.pool.ObjectPoolFactory;
 import five.min.markets.repo.MarketDataFeatureRepository;
 import five.min.markets.repo.NTileStatRepository;
+import jnr.ffi.Struct.swblk_t;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Scope("prototype")
@@ -25,6 +29,7 @@ public class RegressionTrendFeature extends AbstractFeature {
 	private NTileStatRepository nTileStatRepository;
 	private FeatureType featureType;
 	private StatType statType;
+	@Getter
 	private FeatureType baseFeatureType;
 	private Boolean isDownSlope;
 	private Integer numTiles;
@@ -43,13 +48,20 @@ public class RegressionTrendFeature extends AbstractFeature {
 		this.isDownSlope = (Boolean) featureType.config.get("isDown");
 		this.numTiles = (Integer) statType.config.get("tiles");
 	}
+	
+	private MarketDataFeature getBaseFeature(IMarketData marketData) {
+		return switch(marketData) {
+			case MarketData m -> marketDataFeatureRepository.findByMarketDataEqualsAndFeatureTypeEquals(marketData.getId(), baseFeatureType);
+			case RuntimeMarketData r -> r.getFeatureByType(baseFeatureType);
+			default -> throw new IllegalArgumentException("Unexpected value: " + marketData);
+		};
+	}
 
 	@Override
 	public MarketDataFeature getFeature(IMarketData marketData) {
 		List<NTileStat> nTileStats = nTileStatRepository.findByMarketAndStatType(
 				marketData, statType, PageRequest.of(0, numTiles));
-		MarketDataFeature regressionFeature = marketDataFeatureRepository
-				.findByMarketDataEqualsAndFeatureTypeEquals(marketData.getId(), baseFeatureType);
+		MarketDataFeature regressionFeature = getBaseFeature(marketData);
 		if(regressionFeature == null) {
 			log.debug("No feature for {} and market data {}", baseFeatureType, marketData.getId());
 			return null;

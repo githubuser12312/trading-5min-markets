@@ -12,10 +12,9 @@ import lombok.Setter;
 public abstract class AbstractFeature implements FeatureMapper {
 
 	protected MarketDataFeatureRepository marketDataFeatureRepository;
-	@Getter @Setter
-	private boolean isFastMode = false;
 	private ObjectPoolFactory objectPoolFactory;
-	
+	@Getter @Setter
+	private MappingMode mappingMode = MappingMode.HISTORIC;
 	public AbstractFeature(MarketDataFeatureRepository marketDataFeatureRepository,
 			ObjectPoolFactory objectPoolFactory) {
 		this.marketDataFeatureRepository = marketDataFeatureRepository;
@@ -23,6 +22,11 @@ public abstract class AbstractFeature implements FeatureMapper {
 	}
 	
 	protected MarketDataFeature getFeatureFromDb(IMarketData marketData) {
+		if(mappingMode == MappingMode.RUNTIME) {
+			MarketDataFeature feature = objectPoolFactory.borrow(MarketDataFeature.class);
+			feature.setFeatureType(getFeatureType());
+			return feature;
+		}
 		MarketDataFeature currentFeature = marketDataFeatureRepository.findByMarketDataEqualsAndFeatureTypeEquals(
 				marketData.getId(), getFeatureType());
 		if(currentFeature == null) {

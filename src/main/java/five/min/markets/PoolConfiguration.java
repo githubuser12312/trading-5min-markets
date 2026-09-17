@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import five.min.markets.entity.FeatureType;
 import five.min.markets.entity.Market;
 import five.min.markets.entity.MarketData;
 import five.min.markets.entity.MarketDataFeature;
@@ -16,11 +17,12 @@ public class PoolConfiguration {
 
 	@Bean
 	ObjectPool<RuntimeMarketData> marketDataObjectPool() throws Exception {
-		return new ObjectPool<>(RuntimeMarketData.class, 1000);
+		return new ObjectPool<>(RuntimeMarketData.class, 1);
 	}
 	
 	@Bean
-	ObjectPool<Market> marketObjectPool() throws Exception {
-		return new ObjectPool<>(Market.class, 1000);
+	ObjectPool<MarketDataFeature> marketDataFeatuerObjectPool() throws Exception {
+		return new ObjectPool<>(MarketDataFeature.class, FeatureType.values().length);
 	}
+
 }
