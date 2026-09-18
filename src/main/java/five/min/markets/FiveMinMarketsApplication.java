@@ -9,6 +9,7 @@ import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+import five.min.markets.poly.api.rest.PolyRest;
 import jakarta.annotation.PostConstruct;
 import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
 

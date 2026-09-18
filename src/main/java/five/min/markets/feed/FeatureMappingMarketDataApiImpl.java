@@ -35,11 +35,17 @@ public class FeatureMappingMarketDataApiImpl implements MarketDataApi {
 	
 	@Override
 	public void onCandleClose(RuntimeMarketData marketData) {
-		MarketDataFeature[] feature = featureGenerator.getFeatures((IMarketData) marketData);
-		Stream.of(feature).forEach(f -> System.out.println(f));
-		double probability = probabilityCalculator.calculateProbability(marketData, feature);
-		log.info("Probability of market up is {}", probability);		
-		featureGenerator.returnToPool(feature);
+		MarketDataFeature[] feature = null;
+		try {
+			feature = featureGenerator.getFeatures((IMarketData) marketData);
+			Stream.of(feature).forEach(f -> System.out.println(f));
+			double probability = probabilityCalculator.calculateProbability(marketData, feature);
+			log.info("Probability of market up is {}", probability);
+		} finally {
+			if(feature != null) {
+				featureGenerator.returnToPool(feature);
+			}
+		}
 	}
 
 }

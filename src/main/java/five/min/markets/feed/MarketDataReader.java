@@ -17,7 +17,7 @@ import net.openhft.chronicle.bytes.MethodReader;
 import net.openhft.chronicle.core.io.InvalidMarshallableException;
 import net.openhft.chronicle.core.threads.InvalidEventHandlerException;
 import net.openhft.chronicle.queue.ExcerptAppender;
-
+@Profile("marketListening")
 @Component
 @Slf4j
 public class MarketDataReader implements MarketDataEventHandler {

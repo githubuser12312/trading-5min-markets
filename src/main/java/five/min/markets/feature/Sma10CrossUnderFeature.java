@@ -26,11 +26,13 @@ public class Sma10CrossUnderFeature extends AbstractSmaFeature {
 		if(!isFull()) return;
 		if(nowMinus1== null) {
 			nowMinus1 = marketData;
+			marketDataFeature.setBooleanValue(Boolean.FALSE);
 			return;
 		}
 		if(nowMinus2 == null) {
 			nowMinus2 = nowMinus1;
 			nowMinus1 = marketData;
+			marketDataFeature.setBooleanValue(Boolean.FALSE);
 			return;
 		}
 		if(nowMinus2.getClose() >= getAverage()
