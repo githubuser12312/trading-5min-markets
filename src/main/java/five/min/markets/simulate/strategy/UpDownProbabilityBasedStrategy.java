@@ -7,13 +7,13 @@ import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
-import five.min.markets.bayes.BernoulliBayesModel;
 import five.min.markets.entity.BooleanProbabilityMass;
 import five.min.markets.entity.MarketData;
 import five.min.markets.entity.MarketDataFeature;
 import five.min.markets.entity.ProbabilityMassContainer;
 import five.min.markets.entity.ProbabilityMassData;
 import five.min.markets.entity.StringProbabilityMass;
+import five.min.markets.probability.BernoulliBayesModel;
 import five.min.markets.repo.BooleanProbabilityMassRepository;
 import five.min.markets.repo.MarketDataFeatureRepository;
 import five.min.markets.repo.ProbabilityMassContainerRepository;

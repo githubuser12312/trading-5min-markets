@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
+import five.min.markets.probability.BernoulliBayesModel;
+
 public class BernoulliBayesModelTest {
 
 	@Test

@@ -11,6 +11,7 @@ import five.min.markets.entity.MarketData;
 import five.min.markets.entity.MarketDataFeature;
 import five.min.markets.events.model.RuntimeMarketData;
 import five.min.markets.pool.ObjectPool;
+import five.min.markets.probability.BernoulliBayesModel;
 
 @Configuration
 public class PoolConfiguration {
