@@ -1,6 +1,10 @@
 package five.min.markets.poly.entity;
 
+import java.sql.Types;
 import java.time.Instant;
+
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.annotations.JdbcTypeCode;
 
 import five.min.markets.entity.Period;
 import five.min.markets.entity.Source;
@@ -20,13 +24,15 @@ import lombok.Setter;
 })
 @Getter @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class BinaryPredictionMarket {
+public class PolyBinaryPredictionMarket {
 	@Column(name = "id", unique = true)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Id
 	private Integer id;
 	@Column(nullable =  false, name = "start_epoch_seconds")
-	private long startEpochSeconds;
+	private Long startEpochSeconds;
+	@Column(nullable =  false, name = "start_epoch_seconds_millis")
+	private Long startEpochSecondsMillis;
 	@Column(nullable = false)
 	private Instant start;
 	@Column(nullable = false)
@@ -37,7 +43,7 @@ public class BinaryPredictionMarket {
 	@Column(unique = true, name ="ploy_id", nullable = false)
 	private Long polyId;
 	@Column(name = "min_order_size", nullable = false)
-	private Long minOrderSize;
+	private Double minOrderSize;
 	@Column(name = "up_clob_token_id", nullable = false)
 	private String upClobTokenId;
 	@Column(name = "down_clob_token_id", nullable = false)
@@ -58,6 +64,8 @@ public class BinaryPredictionMarket {
 	private Period period;
 	@Column(nullable = false)
 	private String code;
+	@Column(nullable = false, name = "market_json", columnDefinition = "text")
+	private String marketJson;
 	
 	
 	
